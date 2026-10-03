@@ -46,7 +46,7 @@ local url = read("Version.lua"):match('Version.UPDATE_URL = "(.-)"')
 assert(url and (url == "" or url:match("^https://")), "UPDATE_URL must be empty or an https link")
 
 -- Shipped docs exist and the README stays short
-assert(lines(read("README.md")) <= 60, "README should stay short")
+assert(lines(read("README.md")) <= 70, "README should stay short") -- 60 until it gained a description and the AI disclosure
 for _, f in ipairs({ "README.md", "CHANGELOG.md" }) do read(f) end
 
 -- .pkgmeta: every top-level file is either shipped to players or explicitly ignored
@@ -83,3 +83,16 @@ for name in pairs(ignore) do
   end
 end
 assert(attrs:find("\n/.pkgmeta export-ignore", 1, true), ".pkgmeta must be export-ignored too")
+
+-- The AI disclosure must stay at the top of the README, not only at the bottom
+local readme = read("README.md")
+assert(readme:sub(1, 600):find("AI disclosure", 1, true) and readme:sub(1, 600):find("Claude", 1, true), "README must disclose AI assistance at the top")
+assert(readme:find("## About this project", 1, true), "README keeps the full AI section")
+
+-- License: present, the standard MIT text, a named holder, mentioned in the README, and in the player zip list
+local lic = read("LICENSE")
+assert(lic:find("^MIT License"), "LICENSE must be the MIT text")
+assert(lic:match("\nCopyright %(c%) %d%d%d%d %S+"), "LICENSE needs a copyright line with a year and a name")
+assert(lic:find("THE SOFTWARE IS PROVIDED \"AS IS\"", 1, true) and lic:find("Permission is hereby granted, free of charge", 1, true))
+assert(read("README.md"):find("LICENSE", 1, true), "README must point at the license")
+assert(read("Makefile"):find("$(wildcard LICENSE*)", 1, true), "the Makefile must ship the license")

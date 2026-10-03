@@ -8,6 +8,7 @@
 - Keep every Lua file at 150 lines or fewer, and list new files in `Whereabouts.toc`.
 - Settings go through `Defaults.lua` and `Options`. Themes are data (`Themes.lua`).
 - Guild only, and nothing is sent while sharing is off. These are tested; do not weaken them.
+- By contributing you agree your change is released under the project's MIT license (see `LICENSE`).
 - Say whether a change was tried in game. Untested is fine; unlabelled is not.
 
 ## Changes

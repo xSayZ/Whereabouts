@@ -56,8 +56,22 @@ Tags: `vX.Y.Z`, `vX.Y.Z-alpha.N`, `vX.Y.Z-beta.N`. The part before the dash must
 CurseForge takes the release type (alpha, beta, release) from the tag name.
 
 ## One-time: CurseForge
-Nothing publishes there until both of these exist, so tags work before you are ready.
-1. Create the addon project on CurseForge and note its Project ID ("About Project" box).
+CurseForge keeps a new project "awaiting moderator approval" until a file is uploaded to it (their guide: "Creating and
+Submitting a Project"). So the first file goes up by hand; automation takes over afterwards.
+
+**First file, by hand**
+1. Create the project on CurseForge and fill in the description (see the README) and licence (MIT).
+2. Tag a release as usual and download the asset `Whereabouts-X.Y.Z.zip` from the GitHub release. That is the player
+   zip: one root folder `Whereabouts/` containing `Whereabouts.toc`. CurseForge requires the root folder name to match the
+   `.toc` name, and `scripts/check-zip.sh` enforces exactly that on every build.
+3. Project dashboard > Files > Upload file: pick the `.zip` (it must really be a zip), a display name, release type
+   **Release**, and the supported game version (the Forever version, 1.60.1, if the list offers it). Paste the changelog
+   section from the release notes.
+4. The file shows "Under Review" until a moderator approves it. CurseForge also states that a project needs at least one
+   **Release**-type file before it syncs to the CurseForge app, and an addon must be tagged with at least one game version.
+
+**Automatic uploads afterwards** (nothing publishes there until both exist, so tags work before you are ready)
+1. Note the project's ID ("About Project" box).
 2. Create an API token at https://www.curseforge.com/account/api-tokens.
 3. In the GitHub repository: Settings > Secrets and variables > Actions.
    - Secret `CF_API_KEY` = the token.
@@ -74,8 +88,8 @@ Run on 2026-10-03 against BigWigs `release.sh` (master) on this repository, dry 
   with no extra flags. Its source maps any `16???` interface to the `forever` game type and accepts `-g forever`.
 - It packages exactly the runtime files; `.pkgmeta` ignores everything else. The CI job "Packager dry run" repeats
   this on every change and fails if the zip is not named `-forever`.
-- Not yet tried: an actual upload to CurseForge, and whether CurseForge needs the first file uploaded by hand
-  for a new project. Both are untested.
+- Not yet tried: an upload through the CurseForge API (the packager job). The first file by hand is CurseForge's
+  documented route for a new project.
 - A third-party report says Forever loads `_Camelot.toc` ahead of an unsuffixed TOC. Whereabouts ships one
   unsuffixed `.toc`; add `Whereabouts_Camelot.toc` only if a future non-Forever client needs a different TOC.
 

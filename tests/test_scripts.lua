@@ -36,12 +36,13 @@ local function build(name, files, extra)
   sh(string.format("cd %s/%s && zip -qr out.zip *", tmp, name))
   return string.format("%s/%s/out.zip", tmp, name)
 end
-local runtime = "Whereabouts.toc Bindings.xml *.lua README.md CHANGELOG.md"
+local runtime = "Whereabouts.toc Bindings.xml *.lua README.md CHANGELOG.md LICENSE"
 code, out = sh("bash scripts/check-zip.sh " .. build("good", runtime))
 assert(code == 0 and out:find("zip layout ok"), out)
 assert(sh("bash scripts/check-zip.sh " .. build("leak", runtime, "mkdir Whereabouts/tests && echo x > Whereabouts/tests/t.lua")) ~= 0, "tests/ leaked")
 assert(sh("bash scripts/check-zip.sh " .. build("make", runtime, "echo x > Whereabouts/Makefile")) ~= 0, "Makefile leaked")
 assert(sh("bash scripts/check-zip.sh " .. build("missing", runtime, "rm Whereabouts/Core.lua")) ~= 0, "TOC file missing")
-assert(sh("bash scripts/check-zip.sh " .. build("nobind", "Whereabouts.toc *.lua README.md CHANGELOG.md")) ~= 0, "Bindings.xml missing")
+assert(sh("bash scripts/check-zip.sh " .. build("nobind", "Whereabouts.toc *.lua README.md CHANGELOG.md LICENSE")) ~= 0, "Bindings.xml missing")
+assert(sh("bash scripts/check-zip.sh " .. build("nolicense", "Whereabouts.toc Bindings.xml *.lua README.md CHANGELOG.md")) ~= 0, "LICENSE missing")
 assert(sh("bash scripts/check-zip.sh " .. build("stray", runtime, "echo x > stray.txt")) ~= 0, "file outside Whereabouts/")
 sh("rm -rf " .. tmp)
