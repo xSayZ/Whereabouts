@@ -21,7 +21,7 @@ Player docs that ship in the zip: `README.md`, `CHANGELOG.md`.
   `.luacheckrc` in step with the list under Conventions, and add a WoW API name to `read_globals` when you start using one.
 - Files that must not ship are listed in `.pkgmeta` (`ignore:`); `tests/test_release.lua` fails if a new top-level file is neither
   runtime nor ignored.
-- Once the repo exists, set `UPDATE_URL` in `Version.lua` (for example the repo's `/releases/latest` page) and release a patch.
+- `UPDATE_URL` in `Version.lua` points at the repo's `/releases` list (not `/releases/latest`: that 404s while every release is a pre-release, as all 0.x are). Changing it changes player-visible text, so it needs a release.
 - SemVer. Patch: fix. Minor: new feature or additive protocol message. Major: incompatible protocol or saved-settings change.
 - In-game checks are still manual: `/reload`, `/console scriptErrors 1`, `/whereabouts debug`.
 

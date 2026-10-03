@@ -2,8 +2,9 @@ local ADDON, ns = ...
 local Version = {}
 ns.Version = Version
 
--- Where players download updates. Fill this in once the download page exists.
-Version.UPDATE_URL = ""
+-- Where players download updates. The releases list, not /releases/latest: GitHub's "latest" ignores
+-- pre-releases and 404s while every release (all 0.x) is one.
+Version.UPDATE_URL = "https://github.com/xSayZ/Whereabouts/releases"
 
 local meta = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
 -- The .toc is the single source of truth for the version number.

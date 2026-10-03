@@ -37,4 +37,4 @@ Shows your guildmates on the world map. For WoW Forever. Off until you turn it o
 
 ## More
 - Changes: `CHANGELOG.md`
-- Download and updates: link not set yet.
+- Download and updates: https://github.com/xSayZ/Whereabouts/releases
