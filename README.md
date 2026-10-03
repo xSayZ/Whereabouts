@@ -59,4 +59,5 @@ Whereabouts is written with Claude, Anthropic's AI assistant, used as a programm
 
 ## More
 - Changes: `CHANGELOG.md`
+- License: MIT, see `LICENSE`.
 - Source, downloads and bug reports: https://github.com/xSayZ/Whereabouts
