@@ -6,18 +6,27 @@ the same checks on every push.
 Everything below runs from a tag. A tag that disagrees with `Whereabouts.toc` is refused before anything is published.
 
 ## One-time: GitHub
-Needs `git` and the GitHub CLI (`gh`), logged in once with `gh auth login`. These lines work as written in
-PowerShell, cmd and bash. There is no `<owner>` to fill in: `gh` creates the repository under the account you
-logged in with. Each command is on its own line because `&&` does not work in Windows PowerShell 5.1.
+You need `git`. The GitHub CLI (`gh`) is optional; only the first-time repository creation can use it, and the release
+workflow brings its own. These lines work as written in PowerShell, cmd and bash, one command per line because
+`&&` does not work in Windows PowerShell 5.1. Never type angle brackets (`<` `>`): PowerShell reserves them.
+
+**Without `gh`:** create an empty public repository named `Whereabouts` at https://github.com/new (leave "Add a
+README", ".gitignore" and "license" unchecked), then:
 ```
 cd Whereabouts
 git init -b main
 git add -A
 git commit -m "Whereabouts 0.3.0"
+git remote add origin https://github.com/xSayZ/Whereabouts.git
+git push -u origin main
+```
+Git for Windows normally opens a browser sign-in on the first push. (Done for xSayZ/Whereabouts.)
+
+**With `gh`:** `winget install --id GitHub.cli`, reopen the terminal, run `gh auth login`, then after the commit:
+```
 gh repo create Whereabouts --public --source=. --remote=origin --push
 ```
-`--push` needs at least one commit, which is why the commit comes first. Do not type angle brackets (`<` `>`)
-anywhere: PowerShell reserves them.
+`--push` needs at least one commit.
 
 Then in the repository settings:
 - Rules > Rulesets > new branch ruleset for `main`: require a pull request, and require these status checks:
@@ -26,8 +35,9 @@ Then in the repository settings:
 - Actions > General > Workflow permissions: the release job asks for `contents: write` itself. Only change this
   if a release fails with a 403.
 
-Then point the in-game update notice at the releases page: set `Version.UPDATE_URL` in `Version.lua` to
-`https://github.com/YOUR-USERNAME/Whereabouts/releases/latest` (your real username), and release a patch.
+The in-game update notice already points at `https://github.com/xSayZ/Whereabouts/releases` (`Version.UPDATE_URL`). It is the list,
+not `/releases/latest`, because GitHub's "latest" skips pre-releases and returns 404 while every release is one (all 0.x are).
+When CurseForge is live you may prefer to point it there instead; that is a one-line change and needs a release.
 
 ## Every release
 1. Bump `## Version` in `Whereabouts.toc` (the only place). Add the matching `## [x.y.z] - date` entry to `CHANGELOG.md`.

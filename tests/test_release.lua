@@ -42,7 +42,8 @@ assert(keys:find("BINDING_NAME_" .. name, 1, true) and keys:find("BINDING_HEADER
 
 -- Sharing must default to off, and the update link must be a plain string setting
 assert(read("Defaults.lua"):find("enabled = false"), "sharing must default to off")
-assert(read("Version.lua"):find('Version.UPDATE_URL = ""', 1, true))
+local url = read("Version.lua"):match('Version.UPDATE_URL = "(.-)"')
+assert(url and (url == "" or url:match("^https://")), "UPDATE_URL must be empty or an https link")
 
 -- Shipped docs exist and the README stays short
 assert(lines(read("README.md")) <= 60, "README should stay short")

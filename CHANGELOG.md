@@ -16,8 +16,8 @@ Versions 0.1.0 and 0.2.0 were internal builds made while the addon was being wri
 - Key binding "Hold to hide names on the map" (Esc > Options > Key Bindings > AddOns).
 - Update notice. While sharing is on, each client announces its version to the guild every 10 minutes. If a
   guildmate runs a newer version you get a chat message, a line in the settings, and a note on the minimap
-  button tooltip. The download link is one line in `Version.lua` (`UPDATE_URL`); until it is set, the
-  message says so.
+  button tooltip. The link points at the GitHub releases page and is one line in `Version.lua`
+  (`UPDATE_URL`); if it is ever empty, the message says so.
 - `Defaults.lua`: one file with every starting value. Edit it to change what a fresh install does.
 - Commands: `/whereabouts version`, `names`, `map`, `reset`.
 - Developer tooling: `Makefile` (`make test`, `make package`), an offline test suite in `tests/`, and release
