@@ -58,7 +58,20 @@ jobs:
           args: -d -u
       - name: Check what the packager built
         run: |
-          zip=$(ls .release/Whereabouts-*.zip)
+          shopt -s nullglob
+          zips=(.release/Whereabouts-*.zip)
+          if [ ${#zips[@]} -eq 0 ]; then
+            # By design the packager builds nothing on a branch push whose commit is already tagged:
+            # the tag push is what packages it (the Release workflow).
+            tags=$(git tag --points-at HEAD)
+            if [ "$GITHUB_EVENT_NAME" = push ] && [ -n "$tags" ]; then
+              echo "::notice::Packager skipped by design: HEAD is tagged ($tags). The Release workflow packages tags."
+              exit 0
+            fi
+            echo "::error::the packager built no zip"
+            exit 1
+          fi
+          zip=${zips[0]}
           echo "built $zip"
           case "$zip" in *-forever.zip) ;; *) echo "::error::packager did not detect WoW Forever from the .toc"; exit 1;; esac
           bash scripts/check-zip.sh "$zip"

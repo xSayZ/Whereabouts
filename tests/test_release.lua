@@ -96,3 +96,7 @@ assert(lic:match("\nCopyright %(c%) %d%d%d%d %S+"), "LICENSE needs a copyright l
 assert(lic:find("THE SOFTWARE IS PROVIDED \"AS IS\"", 1, true) and lic:find("Permission is hereby granted, free of charge", 1, true))
 assert(read("README.md"):find("LICENSE", 1, true), "README must point at the license")
 assert(read("Makefile"):find("$(wildcard LICENSE*)", 1, true), "the Makefile must ship the license")
+
+-- The CI packager check must not fail when the packager skips a tagged branch push on purpose
+assert(ci:find("git tag --points-at HEAD", 1, true) and ci:find("::error::the packager built no zip", 1, true),
+  "CI packager check must tolerate the packager's skip of tagged branch pushes, and still fail otherwise")

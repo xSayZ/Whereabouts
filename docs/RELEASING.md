@@ -93,6 +93,12 @@ Run on 2026-10-03 against BigWigs `release.sh` (master) on this repository, dry 
 - A third-party report says Forever loads `_Camelot.toc` ahead of an unsuffixed TOC. Whereabouts ships one
   unsuffixed `.toc`; add `Whereabouts_Camelot.toc` only if a future non-Forever client needs a different TOC.
 
+## CI shows red right after a release?
+The CI job "Packager dry run" runs on every push to `main`. The BigWigs packager deliberately builds nothing for a
+branch push whose commit already has a tag ("Found future tag ..., not packaging"), so the tag push can build it
+instead. Tagging straight after merging therefore used to make that job fail for lack of a zip. The check now treats
+exactly that case as a pass (with a notice) and still fails if no zip appears for any other reason.
+
 ## What the downloads contain
 - `Whereabouts-X.Y.Z.zip` (the asset the workflow attaches, and what CurseForge gets): runtime files only.
 - GitHub also adds "Source code (zip)" and "(tar.gz)" to every release; they cannot be switched off. Since 0.3.1 they

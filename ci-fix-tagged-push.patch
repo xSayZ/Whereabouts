@@ -1,0 +1,55 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 3742a98..b1f49d2 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -58,7 +58,20 @@ jobs:
+           args: -d -u
+       - name: Check what the packager built
+         run: |
+-          zip=$(ls .release/Whereabouts-*.zip)
++          shopt -s nullglob
++          zips=(.release/Whereabouts-*.zip)
++          if [ ${#zips[@]} -eq 0 ]; then
++            # By design the packager builds nothing on a branch push whose commit is already tagged:
++            # the tag push is what packages it (the Release workflow).
++            tags=$(git tag --points-at HEAD)
++            if [ "$GITHUB_EVENT_NAME" = push ] && [ -n "$tags" ]; then
++              echo "::notice::Packager skipped by design: HEAD is tagged ($tags). The Release workflow packages tags."
++              exit 0
++            fi
++            echo "::error::the packager built no zip"
++            exit 1
++          fi
++          zip=${zips[0]}
+           echo "built $zip"
+           case "$zip" in *-forever.zip) ;; *) echo "::error::packager did not detect WoW Forever from the .toc"; exit 1;; esac
+           bash scripts/check-zip.sh "$zip"
+diff --git a/docs/RELEASING.md b/docs/RELEASING.md
+index 50aa6bb..b7c48e0 100644
+--- a/docs/RELEASING.md
++++ b/docs/RELEASING.md
+@@ -93,6 +93,12 @@ Run on 2026-10-03 against BigWigs `release.sh` (master) on this repository, dry
+ - A third-party report says Forever loads `_Camelot.toc` ahead of an unsuffixed TOC. Whereabouts ships one
+   unsuffixed `.toc`; add `Whereabouts_Camelot.toc` only if a future non-Forever client needs a different TOC.
+ 
++## CI shows red right after a release?
++The CI job "Packager dry run" runs on every push to `main`. The BigWigs packager deliberately builds nothing for a
++branch push whose commit already has a tag ("Found future tag ..., not packaging"), so the tag push can build it
++instead. Tagging straight after merging therefore used to make that job fail for lack of a zip. The check now treats
++exactly that case as a pass (with a notice) and still fails if no zip appears for any other reason.
++
+ ## What the downloads contain
+ - `Whereabouts-X.Y.Z.zip` (the asset the workflow attaches, and what CurseForge gets): runtime files only.
+ - GitHub also adds "Source code (zip)" and "(tar.gz)" to every release; they cannot be switched off. Since 0.3.1 they
+diff --git a/tests/test_release.lua b/tests/test_release.lua
+index baef641..0d935bf 100644
+--- a/tests/test_release.lua
++++ b/tests/test_release.lua
+@@ -96,3 +96,7 @@ assert(lic:match("\nCopyright %(c%) %d%d%d%d %S+"), "LICENSE needs a copyright l
+ assert(lic:find("THE SOFTWARE IS PROVIDED \"AS IS\"", 1, true) and lic:find("Permission is hereby granted, free of charge", 1, true))
+ assert(read("README.md"):find("LICENSE", 1, true), "README must point at the license")
+ assert(read("Makefile"):find("$(wildcard LICENSE*)", 1, true), "the Makefile must ship the license")
++
++-- The CI packager check must not fail when the packager skips a tagged branch push on purpose
++assert(ci:find("git tag --points-at HEAD", 1, true) and ci:find("::error::the packager built no zip", 1, true),
++  "CI packager check must tolerate the packager's skip of tagged branch pushes, and still fail otherwise")
