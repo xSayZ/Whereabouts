@@ -1,0 +1,14 @@
+name: Feature request
+description: Suggest something
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What would you like, and why?
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        Out of scope: sending location to anyone but your guild, or sending while sharing is off.

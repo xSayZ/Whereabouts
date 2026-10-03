@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Lint and test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1 and luacheck
+        run: sudo apt-get update && sudo apt-get install -y lua5.1 lua-check
+      - name: Lint
+        run: luacheck . --no-color
+      - name: Test
+        run: make test
+
+  package:
+    name: Build the player zip
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1
+        run: sudo apt-get update && sudo apt-get install -y lua5.1
+      - name: Package
+        run: make package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Whereabouts-${{ github.sha }}
+          path: dist/Whereabouts-*.zip
+          retention-days: 14
+
+  # Rehearses the CurseForge packaging path on every change. Dry run: nothing is uploaded.
+  packager-check:
+    name: Packager dry run
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: BigWigsMods/packager@v2
+        with:
+          args: -d -u
+      - name: Check what the packager built
+        run: |
+          zip=$(ls .release/Whereabouts-*.zip)
+          echo "built $zip"
+          case "$zip" in *-forever.zip) ;; *) echo "::error::packager did not detect WoW Forever from the .toc"; exit 1;; esac
+          bash scripts/check-zip.sh "$zip"

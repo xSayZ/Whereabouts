@@ -1,0 +1,22 @@
+# Used by the BigWigs packager (CurseForge/GitHub release). The Makefile zip uses the same file list.
+package-as: Whereabouts
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+# Everything that is not part of the addon itself.
+ignore:
+  - tests
+  - docs
+  - scripts
+  - Makefile
+  - CLAUDE.md
+  - CONTRIBUTING.md
+  - SECURITY.md
+  - .luacheckrc
+  - .gitignore
+  - .gitattributes
+  - .github
+  - dist
+  - .release

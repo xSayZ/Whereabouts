@@ -1,0 +1,81 @@
+name: Release
+
+# Push a tag to release:  git tag -a v0.3.0 -m "Whereabouts 0.3.0" && git push origin v0.3.0
+# Tags: vX.Y.Z, or vX.Y.Z-alpha.N / vX.Y.Z-beta.N (the base version must match Whereabouts.toc).
+on:
+  push:
+    tags: ["v[0-9]*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify the tag
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1 and luacheck
+        run: sudo apt-get update && sudo apt-get install -y lua5.1 lua-check
+      - name: Tag matches the .toc and the changelog
+        id: check
+        run: echo "version=$(bash scripts/check-tag.sh "$GITHUB_REF_NAME")" >> "$GITHUB_OUTPUT"
+      - name: Lint
+        run: luacheck . --no-color
+      - name: Test
+        run: make test
+
+  github:
+    name: GitHub release
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.verify.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1
+        run: sudo apt-get update && sudo apt-get install -y lua5.1
+      - name: Build the zip
+        run: make package
+      - name: Create the release
+        run: |
+          bash scripts/release-notes.sh "$VERSION" > notes.md
+          flags=""
+          # Below 1.0.0, or an alpha/beta tag: say so on the release page.
+          case "$VERSION" in 0.*) flags="--prerelease";; esac
+          case "$GITHUB_REF_NAME" in *-alpha.*|*-beta.*) flags="--prerelease";; esac
+          gh release create "$GITHUB_REF_NAME" "dist/Whereabouts-$VERSION.zip" \
+            --title "Whereabouts $VERSION" --notes-file notes.md $flags
+
+  # Runs only when the repository variable CURSEFORGE_PROJECT_ID is set (see docs/RELEASING.md).
+  curseforge:
+    name: CurseForge
+    needs: [verify, github]
+    if: ${{ vars.CURSEFORGE_PROJECT_ID != '' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: The API key must exist once a project ID is set
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+        run: test -n "$CF_API_KEY" || { echo "::error::CURSEFORGE_PROJECT_ID is set but the CF_API_KEY secret is missing"; exit 1; }
+      # No GITHUB_OAUTH here on purpose: the job above already made the GitHub release.
+      - uses: BigWigsMods/packager@v2
+        with:
+          args: -u -p ${{ vars.CURSEFORGE_PROJECT_ID }} ${{ vars.PACKAGER_ARGS }}
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}

@@ -1,0 +1,43 @@
+name: Bug report
+description: Something does not work
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Whereabouts version
+      description: Type /whereabouts version in game.
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: Game client
+      description: For example WoW Forever 1.60.1.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+  - type: textarea
+    id: debug
+    attributes:
+      label: Output of /whereabouts debug
+      description: It lists character names. Blank out any you do not want public.
+      render: text
+  - type: textarea
+    id: errors
+    attributes:
+      label: Lua errors
+      description: Run /console scriptErrors 1, reproduce the problem, paste the error.
+      render: text
+  - type: input
+    id: addons
+    attributes:
+      label: Other addons that touch the map or minimap
+      description: For example HidingBar, a minimap replacement, a map addon.

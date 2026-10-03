@@ -1,0 +1,29 @@
+## Interface: 16001
+## Title: Whereabouts
+## Notes: Opt-in guild map sharing. Off by default; type /whereabouts for settings.
+## Version: 0.3.0
+## IconTexture: Interface\Icons\INV_Misc_Map_01
+## SavedVariables: WhereaboutsDB
+
+Defaults.lua
+Options.lua
+Version.lua
+Themes.lua
+UserThemes.lua
+Roster.lua
+Project.lua
+Classes.lua
+Wire.lua
+PinArt.lua
+PinPool.lua
+Pins.lua
+Comms.lua
+Inbox.lua
+Widgets.lua
+Panel.lua
+Config.lua
+MapToggle.lua
+MinimapButton.lua
+Keys.lua
+Debug.lua
+Core.lua

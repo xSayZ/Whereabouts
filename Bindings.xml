@@ -1,0 +1,5 @@
+<Bindings>
+  <Binding name="WHEREABOUTS_HIDE_NAMES" header="WHEREABOUTS" category="ADDONS" runOnUp="true">
+    WhereaboutsHideNamesKey(keystate)
+  </Binding>
+</Bindings>
