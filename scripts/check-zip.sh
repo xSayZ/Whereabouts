@@ -9,7 +9,7 @@ listing="$(unzip -Z1 "$zip")"
 bad="$(grep -vE '^Whereabouts(/|$)' <<<"$listing" || true)"
 [[ -z "$bad" ]] || { echo "files outside Whereabouts/: $bad" >&2; exit 1; }
 
-for need in Whereabouts/Whereabouts.toc Whereabouts/Bindings.xml Whereabouts/README.md Whereabouts/CHANGELOG.md; do
+for need in Whereabouts/Whereabouts.toc Whereabouts/Bindings.xml Whereabouts/README.md Whereabouts/CHANGELOG.md Whereabouts/LICENSE; do
   grep -qx "$need" <<<"$listing" || { echo "missing $need" >&2; exit 1; }
 done
 

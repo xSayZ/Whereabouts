@@ -55,5 +55,7 @@ Player docs that ship in the zip: `README.md`, `CHANGELOG.md`.
 - Send more than one message per interval (see `Comms.lua` constants).
 - Draw or store our own character as a peer. Self is excluded by normalised name (`Roster.IsSelf`) and by echo
   learning in `Inbox.lua`. Never hide other players because a self check is unsure: fail towards showing.
+- Add third-party code or art without asking and without noting its license. The project is MIT (`LICENSE`).
 - Add third-party libraries without asking. The reference addon QuestlineJournal uses none.
-- Claim an API works on Forever without noting whether it was tested in-game.
+- Claim an API works on Forever without a source: an in-game result from the maintainer, or a document. Do not add blanket "untested
+  in game" disclaimers to replies or docs: the maintainer play-tests every release. Name what is unknown, specifically, only when it affects a decision.
