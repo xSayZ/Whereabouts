@@ -19,7 +19,7 @@ Player docs that ship in the zip: `README.md`, `CHANGELOG.md`.
   start once the `CURSEFORGE_PROJECT_ID` variable and `CF_API_KEY` secret exist. Full runbook: `docs/RELEASING.md`.
 - CI (`.github/workflows/ci.yml`): luacheck + tests, the player zip, and a BigWigs packager dry run. Keep the globals in
   `.luacheckrc` in step with the list under Conventions, and add a WoW API name to `read_globals` when you start using one.
-- Files that must not ship are listed in `.pkgmeta` (`ignore:`); `tests/test_release.lua` fails if a new top-level file is neither
+- Files that must not ship are listed in `.pkgmeta` (`ignore:`) and in `.gitattributes` (`export-ignore`, for GitHub's source downloads); `tests/test_release.lua` fails if a new top-level file is neither
   runtime nor ignored.
 - `UPDATE_URL` in `Version.lua` points at the repo's `/releases` list (not `/releases/latest`: that 404s while every release is a pre-release, as all 0.x are). Changing it changes player-visible text, so it needs a release.
 - SemVer. Patch: fix. Minor: new feature or additive protocol message. Major: incompatible protocol or saved-settings change.

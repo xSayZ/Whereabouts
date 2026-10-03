@@ -74,3 +74,12 @@ for _, wf in ipairs({ ci, rel }) do
   assert(not wf:find("\n%s*if:[^\n]*secrets%."), "secrets cannot be used in an if: condition")
 end
 assert(not read(".github/workflows/release.yml"):find("@main") and not ci:find("@main"), "do not track an action's main branch")
+
+-- .gitattributes export-ignore matches .pkgmeta's ignore list (GitHub's "Source code" downloads stay clean too)
+local attrs = read(".gitattributes")
+for name in pairs(ignore) do
+  if name ~= "dist" and name ~= ".release" then
+    assert(attrs:find("\n/" .. name .. " export-ignore", 1, true), name .. " is in .pkgmeta ignore but not export-ignore in .gitattributes")
+  end
+end
+assert(attrs:find("\n/.pkgmeta export-ignore", 1, true), ".pkgmeta must be export-ignored too")

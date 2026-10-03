@@ -20,7 +20,7 @@ end
 
 -- release-notes: exactly one section, no neighbours, fails for an unknown version
 code, out = sh("bash scripts/release-notes.sh " .. version)
-assert(code == 0 and out:find("^### Added") and not out:find("%[0%.2%.0%]") and not out:find("^## "), out:sub(1, 80))
+assert(code == 0 and out:find("^### %u") and not out:find("%[0%.2%.0%]") and not out:find("^## "), out:sub(1, 80))
 code, out = sh("bash scripts/release-notes.sh 0.2.0")
 assert(code == 0 and not out:find("0%.1%.0%]") and not out:find("%[0%.3%.0%]"))
 assert(sh("bash scripts/release-notes.sh 9.9.9") ~= 0, "unknown version must fail")

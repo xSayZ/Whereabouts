@@ -5,6 +5,18 @@ Versions: [Semantic Versioning](https://semver.org/). Below 1.0.0, a minor relea
 
 Versions 0.1.0 and 0.2.0 were internal builds made while the addon was being written. They were never published.
 
+## [0.3.1] - 2026-10-03
+
+### Changed
+- README describes what Whereabouts is and how it works, and says plainly that Claude (Anthropic's AI
+  assistant) was used as a programming assistant: what that covers, what it does not (the addon never contacts
+  an AI and has no AI-generated art), and a link to read more about AI-assisted programming.
+- GitHub's automatic "Source code (zip)" and "(tar.gz)" downloads on a release no longer include the tests,
+  docs, scripts and CI files. The player zip `Whereabouts-X.Y.Z.zip` was already clean.
+
+### Protocol
+- Unchanged (version 1).
+
 ## [0.3.0] - 2026-10-03
 
 ### Added
