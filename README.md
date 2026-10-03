@@ -1,6 +1,15 @@
 # Whereabouts
 
-Shows your guildmates on the world map. For WoW Forever. Off until you turn it on.
+> **AI disclosure:** Whereabouts is written with Claude, Anthropic's AI assistant, used as a programming
+> assistant. Claude wrote most of the code and tests; I decide what it does, play-test every version and
+> release it. The addon itself never uses AI. Details: [About this project](#about-this-project).
+
+Whereabouts shows your guildmates on the world map, so you can see where they are without being in a group
+with them. It is made for WoW Forever.
+
+It is opt-in: nothing is sent or shown until you turn it on. Every player who has it on shares their map and
+position with their own guild over the game's guild addon channel, and every guildmate who has the addon draws
+what it receives as a pin with a name. There is no server and no website behind it.
 
 ## Install
 - Copy the `Whereabouts` folder to `World of Warcraft/_classic_beta_/Interface/AddOns/`.
@@ -29,12 +38,25 @@ Shows your guildmates on the world map. For WoW Forever. Off until you turn it o
 - Sent: your map ID and two position numbers. Nothing inside instances or while sharing is off.
 - Your own pin is never shown.
 - A guildmate with a modified client could log positions. Turn it on only if you trust your guild.
+- The source is open. Read it before you trust it.
 
 ## Settings in files
 - `Defaults.lua`: starting values for every setting.
 - `UserThemes.lua`: your own themes.
 - Settings may not survive a restart on the Forever beta. Edit `Defaults.lua` to keep a choice.
 
+## About this project
+Whereabouts is written with Claude, Anthropic's AI assistant, used as a programming assistant.
+- Claude wrote most of the code and the tests. I decide what the addon does, play-test it in the game, and
+  publish it.
+- The AI is a development tool only. The addon never contacts an AI, and it has no AI-generated art: every
+  icon is one of Blizzard's own.
+- AI-written code can be wrong, so every version is play-tested in the game before it is released, on top of
+  the automated tests.
+- The instructions I give the AI are public too: `CLAUDE.md` in the source repository.
+- New to the idea? Simon Willison explains the difference between careless "vibe coding" and responsible
+  AI-assisted programming: https://simonwillison.net/2025/Mar/19/vibe-coding/
+
 ## More
 - Changes: `CHANGELOG.md`
-- Download and updates: https://github.com/xSayZ/Whereabouts/releases
+- Source, downloads and bug reports: https://github.com/xSayZ/Whereabouts
