@@ -79,6 +79,14 @@ Run on 2026-10-03 against BigWigs `release.sh` (master) on this repository, dry 
 - A third-party report says Forever loads `_Camelot.toc` ahead of an unsuffixed TOC. Whereabouts ships one
   unsuffixed `.toc`; add `Whereabouts_Camelot.toc` only if a future non-Forever client needs a different TOC.
 
+## What the downloads contain
+- `Whereabouts-X.Y.Z.zip` (the asset the workflow attaches, and what CurseForge gets): runtime files only.
+- GitHub also adds "Source code (zip)" and "(tar.gz)" to every release; they cannot be switched off. Since 0.3.1 they
+  honour `export-ignore` in `.gitattributes`, so they omit tests, docs and CI files too. Several projects report that
+  GitHub honours this; I have not seen it in GitHub's own documentation, so check the first release after 0.3.1.
+  Archives of tags made before the rule existed (v0.3.0) still contain everything.
+- A `git clone` is the full repository by design.
+
 ## Hardening you may want later
 - Pin third-party actions (`BigWigsMods/packager`) to a full commit SHA instead of `@v2`. Dependabot is set up to
   propose updates for them weekly.

@@ -8,3 +8,18 @@ Makefile text eol=lf
 *.sh  text eol=lf
 .pkgmeta text eol=lf
 .luacheckrc text eol=lf
+
+# Keep dev-only files out of `git archive` and GitHub's automatic "Source code" downloads.
+# Same list as `ignore:` in .pkgmeta; tests/test_release.lua keeps the two in step.
+/tests export-ignore
+/docs export-ignore
+/scripts export-ignore
+/.github export-ignore
+/Makefile export-ignore
+/CLAUDE.md export-ignore
+/CONTRIBUTING.md export-ignore
+/SECURITY.md export-ignore
+/.luacheckrc export-ignore
+/.gitignore export-ignore
+/.gitattributes export-ignore
+/.pkgmeta export-ignore

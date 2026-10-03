@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: Whereabouts
 ## Notes: Opt-in guild map sharing. Off by default; type /whereabouts for settings.
-## Version: 0.3.0
+## Version: 0.3.1
 ## IconTexture: Interface\Icons\INV_Misc_Map_01
 ## SavedVariables: WhereaboutsDB
 

@@ -1,9 +1,5 @@
 # Whereabouts
 
-> **AI disclosure:** Whereabouts is written with Claude, Anthropic's AI assistant, used as a programming
-> assistant. Claude wrote most of the code and tests; I decide what it does, play-test every version and
-> release it. The addon itself never uses AI. Details: [About this project](#about-this-project).
-
 Whereabouts shows your guildmates on the world map, so you can see where they are without being in a group
 with them. It is made for WoW Forever.
 
@@ -51,13 +47,12 @@ Whereabouts is written with Claude, Anthropic's AI assistant, used as a programm
   publish it.
 - The AI is a development tool only. The addon never contacts an AI, and it has no AI-generated art: every
   icon is one of Blizzard's own.
-- AI-written code can be wrong, so every version is play-tested in the game before it is released, on top of
-  the automated tests.
+- AI-written code can be wrong. It is covered by automated tests and by playing the game, but not everything is
+  verified in game yet. Known gaps are listed in `CHANGELOG.md`.
 - The instructions I give the AI are public too: `CLAUDE.md` in the source repository.
 - New to the idea? Simon Willison explains the difference between careless "vibe coding" and responsible
   AI-assisted programming: https://simonwillison.net/2025/Mar/19/vibe-coding/
 
 ## More
 - Changes: `CHANGELOG.md`
-- License: MIT, see `LICENSE`.
 - Source, downloads and bug reports: https://github.com/xSayZ/Whereabouts

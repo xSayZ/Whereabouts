@@ -7,15 +7,10 @@ Versions 0.1.0 and 0.2.0 were internal builds made while the addon was being wri
 
 ## [0.3.1] - 2026-10-03
 
-### Added
-- MIT license (`LICENSE`), included in the player zip.
-
 ### Changed
-- README describes what Whereabouts is and how it works, and says plainly, at the top and in its own section,
-  that Claude (Anthropic's AI assistant) was used as a programming assistant: what that covers, what it does not (the addon never contacts
+- README describes what Whereabouts is and how it works, and says plainly that Claude (Anthropic's AI
+  assistant) was used as a programming assistant: what that covers, what it does not (the addon never contacts
   an AI and has no AI-generated art), and a link to read more about AI-assisted programming.
-- The 0.3.0 notes listed several features as "not yet verified in game". That was wrong: every version is
-  play-tested before release. The line is removed.
 - GitHub's automatic "Source code (zip)" and "(tar.gz)" downloads on a release no longer include the tests,
   docs, scripts and CI files. The player zip `Whereabouts-X.Y.Z.zip` was already clean.
 
@@ -61,6 +56,8 @@ Versions 0.1.0 and 0.2.0 were internal builds made while the addon was being wri
   sharing is off, inside instances, or outside a guild.
 
 ### Known limitations
+- Not yet verified in game on Forever: the Settings panel registration, the key binding, the Compact and
+  Solid themes, and version announcements.
 - The update notice only works through guildmates who run a newer version with sharing on.
 - Settings may not persist between sessions on the Forever beta (reported by a third party, unconfirmed).
   Edit `Defaults.lua` to make a choice permanent.
@@ -110,4 +107,4 @@ Versions 0.1.0 and 0.2.0 were internal builds made while the addon was being wri
   45 seconds.
 - World-map pins for peers on the map you are viewing.
 - Offline tests of the encoder, decoder and send policy.
-- Project notes: architecture plan, API notes (each fact marked with where it came from), contributor rules.
+- Project notes: architecture plan, API notes (each fact marked as untested in game), contributor rules.
