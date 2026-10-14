@@ -11,7 +11,8 @@ function Debug.Dump()
   P(format("enabled %s | running %s | guild %s | instance %s",
     tostring(ns.IsEnabled()), tostring(ns.Comms.IsRunning()),
     tostring(IsInGuild() and true or false), tostring(IsInInstance() and true or false)))
-  P(format("SEND ok %d | failed %d | last failure result: %s", st.sent, st.fail, tostring(st.lastRes)))
+  P(format("SEND ok %d | failed %d | last failure result: %s | fast mode (guildmate nearby) %s", st.sent, st.fail,
+    tostring(st.lastRes), tostring(ns.Comms.IsFast())))
   P(format("RECV from others %d | own echoes %d | undecodable %d | last sender: %s",
     st.recv, st.own, st.bad, tostring(st.lastSender)))
   P(format("SELF UnitName %s | last sender is me by name: %s | learned self from echo: %s", tostring(UnitName("player")),
@@ -34,6 +35,9 @@ function Debug.Dump()
     P(format("CANVAS level %d strata %s visible %s left %s bottom %s", cv:GetFrameLevel(),
       cv:GetFrameStrata(), tostring(cv:IsVisible()), tostring(cv:GetLeft()), tostring(cv:GetBottom())))
   end
+  local mp = ns.MiniPins
+  P(format("MINIMAP pins %s | last result: %s | shown %s | radius %s yards | rotating %s", tostring(ns.Options.Get("minimapPins")),
+    tostring(mp.why), tostring(mp.shown), tostring(mp.radius), tostring(mp.facing ~= nil)))
   P(format("CLASSES guild members read %d", ns.Classes.known))
   local now, n = GetTime(), 0
   for name, p in ns.Roster.Iterate() do

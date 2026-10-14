@@ -25,7 +25,7 @@ local function buildWindow()
     bg:SetAllPoints()
     bg:SetColorTexture(0, 0, 0, 0.85)
   end
-  f:SetSize(372, 450)
+  f:SetSize(372, 542)
   f:SetPoint("CENTER")
   f:SetFrameStrata("DIALOG")
   f:SetMovable(true)

@@ -4,7 +4,7 @@
 # make tag       test, check the tree is clean, create the annotated release tag v<version> (does not push)
 ADDON   := Whereabouts
 VERSION := $(shell sed -n 's/^## Version: *//p' $(ADDON).toc | tr -d '\r')
-RUNTIME := $(ADDON).toc Bindings.xml $(wildcard *.lua) README.md CHANGELOG.md $(wildcard LICENSE*)
+RUNTIME := $(ADDON).toc Bindings.xml embeds.xml $(wildcard *.lua) README.md CHANGELOG.md $(wildcard LICENSE*)
 SOURCE  := $(RUNTIME) Makefile CLAUDE.md CONTRIBUTING.md SECURITY.md .pkgmeta .luacheckrc .gitignore .gitattributes .github docs scripts tests
 
 .PHONY: test lint package source tag clean

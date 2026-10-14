@@ -28,10 +28,12 @@ function Pool.Overlay(wm)
   return overlay
 end
 
+function Pool.NewPin(parent) return ns.PinArt.New(parent, onEnter, hideTip) end
+
 function Pool.Get(i, parent)
   local p = pool[i]
   if not p then
-    p = ns.PinArt.New(parent, onEnter, hideTip)
+    p = Pool.NewPin(parent)
     pool[i] = p
   end
   return p

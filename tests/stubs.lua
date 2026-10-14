@@ -107,6 +107,17 @@ function S.install()
     GetMapRectOnMap = function(id, top) return unpack(S.rects[id .. ":" .. top] or {}) end,
   }
   S.parents, S.rects = {}, {}
+  -- Minimap: view radius in yards, map sizes in yards, rotation off. Tests change these.
+  S.radius, S.yards, S.rotate, S.facing = 200, { [1429] = { 4000, 3000 } }, "0", 0
+  _G.C_Minimap = { GetViewRadius = function() return S.radius end }
+  _G.GetCVar = function(k) return k == "rotateMinimap" and S.rotate or nil end
+  _G.GetPlayerFacing = function() return S.facing end
+  _G.CreateVector2D = function(x, y) return { x = x, y = y } end
+  _G.C_Map.GetWorldPosFromMapPos = function(id, v) -- world x runs north, y runs west
+    local m = S.yards[id]
+    if not m then return end
+    return 0, { x = 9000 - v.y * m[2], y = 7000 - v.x * m[1] }
+  end
   _G.GetNumGuildMembers = function() return S.rosterLoaded and #S.roster or 0 end
   _G.GetGuildRosterInfo = function(i)
     local m = S.roster[i]

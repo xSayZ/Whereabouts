@@ -12,6 +12,7 @@ local function refreshUI()
   ns.Config.Refresh()
   ns.MinimapButton.Refresh()
   ns.MapToggle.Refresh()
+  ns.MiniPins.Refresh()
 end
 
 -- Single place that decides whether we should be live right now.
@@ -24,6 +25,7 @@ local function sync()
     ns.Classes.Stop()
     ns.Roster.Clear()
     ns.Pins.Clear()
+    ns.MiniPins.Clear()
   end
   refreshUI()
 end
@@ -38,6 +40,7 @@ function ns.Disable()
   ns.Comms.Stop(true)
   ns.Roster.Clear()
   ns.Pins.Clear()
+  ns.MiniPins.Clear()
   refreshUI()
 end
 
@@ -60,6 +63,7 @@ local commands = {
   names = function() flip("labels") end,
   map = function() flip("mapButton") end,
   minimap = function() flip("minimapButton") end,
+  minimappins = function() flip("minimapPins") end,
   reset = function() ns.Options.Reset() ns.Print("appearance reset to defaults") end,
   probe = function() ns.Comms.Probe() end,
   debug = function() ns.Debug.Dump() end,
@@ -74,7 +78,7 @@ SlashCmdList["WHEREABOUTS"] = function(msg)
   if run then
     run()
   else
-    ns.Print("/whereabouts (settings) | on | off | status | version | names | map | minimap | reset | probe | debug | testpin")
+    ns.Print("/whereabouts (settings) | on | off | status | version | names | map | minimap | minimappins | reset | probe | debug | testpin")
   end
 end
 
@@ -82,8 +86,8 @@ end
 local function onOption(key)
   if key == "minimapButton" then ns.MinimapButton.Refresh()
   elseif key == "mapButton" then ns.MapToggle.Refresh()
-  elseif key == "enabled" then refreshUI()
-  else ns.Pins.Restyle() end -- theme, size, alpha, labels
+  elseif key == "minimapPins" or key == "enabled" then refreshUI()
+  else ns.Pins.Restyle() ns.MiniPins.Restyle() end -- theme, size, alpha, labels
   ns.Config.Refresh()
 end
 

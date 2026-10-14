@@ -9,6 +9,9 @@ ns.Defaults = {
   size = 1.0,            -- pin size multiplier
   alpha = 1.0,           -- pin opacity
   labels = true,         -- show names beside pins
+  minimapSize = 1.0,     -- minimap pin size multiplier
+  minimapNames = true,   -- show names beside pins on the minimap
+  minimapPins = true,    -- show guildmates on the minimap (needs sharing on)
   minimapButton = true,  -- show the minimap button
   mapButton = false,     -- show the On/Off button on the world map
 }
@@ -16,5 +19,6 @@ ns.Defaults = {
 -- Allowed range for numeric options: { min, max, step }.
 ns.Ranges = {
   size = { 0.5, 2.0, 0.1 },
+  minimapSize = { 0.5, 2.0, 0.1 },
   alpha = { 0.2, 1.0, 0.1 },
 }

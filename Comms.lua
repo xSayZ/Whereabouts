@@ -7,9 +7,11 @@ local PREFIX = "WHRBT" -- wire format and protocol version live in Wire.lua
 local CHANNEL = "GUILD"
 Comms.PREFIX, Comms.CHANNEL = PREFIX, CHANNEL
 
-local TICK, EXPIRE_TICK = 5, 10
+local TICK, EXPIRE_TICK = 1, 10
+local SLOW_TICK, FAST_TICK = 5, 2 -- seconds between position checks; fast while a guildmate is nearby
+local NEAR_YARDS, NEAR_PERMILLE = 300, 75 -- "nearby" (the permille figure is used when the map size is unknown)
 local HEARTBEAT = 30
-local MOVE_THRESH = 5 -- permille
+local MOVE_THRESH, FAST_MOVE = 5, 2 -- permille
 local BACKOFF, LOCKDOWN_BACKOFF = 15, 60
 local VERSION_EVERY = 600 -- seconds between version announcements
 local floor, abs = math.floor, math.abs
@@ -17,23 +19,16 @@ local R = Enum and Enum.SendAddonMessageResult
 
 local running, sendTicker, expireTicker
 local pending, pVer, pMap, pX, pY
-local lastSent, backoffUntil, nextVer = 0, 0, 0
+local lastSent, backoffUntil, nextVer, lastTick = 0, 0, 0, 0
+local fast = false
 local lastMap, lastX, lastY
 local sentText, sentAt = nil, 0
 local st = { sent = 0, fail = 0, recv = 0, own = 0, bad = 0, rej = 0 }
 Comms.stats = st
 
 local function ownPos()
-  if not C_Map then return end
-  local map = C_Map.GetBestMapForUnit("player")
-  if not map then return end
-  local pos = C_Map.GetPlayerMapPosition(map, "player")
-  if not pos then return end
-  local x, y = pos:GetXY()
-  if not x or not y then return end
-  if issecretvalue and (issecretvalue(x) or issecretvalue(y)) then return end
-  if x == 0 and y == 0 then return end -- API's "no position" value
-  return map, floor(x * 1000 + 0.5), floor(y * 1000 + 0.5)
+  local map, x, y = ns.OwnPos.Get()
+  if map then return map, floor(x * 1000 + 0.5), floor(y * 1000 + 0.5) end
 end
 
 local function flush(now)
@@ -63,7 +58,8 @@ function Comms.Tick()
   else
     local m, x, y = ownPos()
     if not m then pending = nil return end
-    local moved = m ~= lastMap or abs(x - lastX) > MOVE_THRESH or abs(y - lastY) > MOVE_THRESH
+    local t = fast and FAST_MOVE or MOVE_THRESH
+    local moved = m ~= lastMap or abs(x - lastX) > t or abs(y - lastY) > t
     if moved or now - lastSent >= HEARTBEAT then
       pending, pVer, pMap, pX, pY = ns.Wire.Pos(m, x, y), false, m, x, y -- replaces any older one
     end
@@ -71,6 +67,35 @@ function Comms.Tick()
   flush(now)
 end
 
+-- Is another sharing guildmate within minimap range of this position (permille)?
+local function peerNear(m, x, y)
+  local w, h = ns.MiniView.MapYards(m)
+  for name, peer in ns.Roster.Iterate() do
+    if peer.mapID == m and not ns.Roster.IsSelf(name) then
+      local dx, dy = (peer.x - x) / 1000, (peer.y - y) / 1000
+      if w then
+        if (dx * w) ^ 2 + (dy * h) ^ 2 <= NEAR_YARDS ^ 2 then return true end
+      elseif (dx * 1000) ^ 2 + (dy * 1000) ^ 2 <= NEAR_PERMILLE ^ 2 then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+-- Runs every second and decides whether this is a tick: every 5s normally, every 2s with someone nearby.
+function Comms.Pulse()
+  if not running then return end
+  local m, x, y = ownPos()
+  fast = m ~= nil and peerNear(m, x, y)
+  local now = GetTime()
+  if now - lastTick >= (fast and FAST_TICK or SLOW_TICK) then
+    lastTick = now
+    Comms.Tick()
+  end
+end
+
+function Comms.IsFast() return fast end
 function Comms.IsRunning() return running == true end
 function Comms.LastSent() return sentText, sentAt end -- Inbox uses this to recognise our own echo
 
@@ -91,8 +116,9 @@ function Comms.Start()
   pending, pVer, lastSent, backoffUntil, lastMap, sentText, sentAt = nil, false, 0, 0, nil, nil, 0
   nextVer = GetTime() + 10 + (GetTime() * 1000 % 15) -- first announcement after 10-25s, spread out
   ns.Inbox.Start()
-  sendTicker = C_Timer.NewTicker(TICK, Comms.Tick)
+  sendTicker = C_Timer.NewTicker(TICK, Comms.Pulse)
   expireTicker = C_Timer.NewTicker(EXPIRE_TICK, function() ns.Roster.Expire(GetTime()) end)
+  lastTick, fast = GetTime(), false
   Comms.Tick()
 end
 

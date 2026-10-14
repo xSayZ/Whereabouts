@@ -1,6 +1,6 @@
 # Whereabouts: WoW Forever guild map-sharing addon
 
-Opt-in addon: guild members who enable it appear as pins on each other's world map. Off by default.
+Opt-in addon: guild members who enable it appear as pins on each other's world map and minimap. Off by default.
 Design: `docs/ARCHITECTURE.md`. Read it only when changing module boundaries or the wire protocol.
 Player docs that ship in the zip: `README.md`, `CHANGELOG.md`.
 
@@ -38,7 +38,7 @@ Player docs that ship in the zip: `README.md`, `CHANGELOG.md`.
 ## Conventions
 - Namespace: `local ADDON, ns = ...`. Modules attach to `ns`. Cross-module calls go through `ns` only.
 - Globals, and only these: `WhereaboutsDB` (SavedVariables), the slash handler, the named frame
-  `WhereaboutsMinimapButton` (so button collectors find it), and for the key binding `WhereaboutsHideNamesKey`
+  `WhereaboutsMinimapButton` (so button collectors find it; with LibDBIcon installed the library makes the button instead), and for the key binding `WhereaboutsHideNamesKey`
   plus the two `BINDING_` strings.
 - Settings: add a key to `Defaults.lua` (and a range in `ns.Ranges` if numeric). Read with `ns.Options.Get`, write
   with `ns.Options.Set`. Never touch `WhereaboutsDB` directly, except `minimapAngle`.

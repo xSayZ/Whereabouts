@@ -25,7 +25,12 @@ Widgets.lua        checkbox, stepper, cycle, copy box
 Panel.lua          the settings controls
 Config.lua         Settings category, fallback window, status text
 MapToggle.lua      optional On/Off button on the world map
-MinimapButton.lua  minimap button
+MinimapButton.lua  minimap button: LibDBIcon when installed, otherwise MinimapCustom.lua
+MinimapCustom.lua  the plain button (fallback)
+embeds.xml         loads the libraries that release builds fetch
+OwnPos.lua         your own map and position (fractions); used by Comms and MiniPins
+MiniView.lua       minimap maths: view radius, map size in yards, rotation
+MiniPins.lua       guildmate pins on the minimap, updated 10 times a second while shown
 Keys.lua           key binding handler
 Debug.lua          /whereabouts debug
 Core.lua           events, slash commands, start/stop decision

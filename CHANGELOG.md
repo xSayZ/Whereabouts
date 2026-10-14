@@ -5,6 +5,46 @@ Versions: [Semantic Versioning](https://semver.org/). Below 1.0.0, a minor relea
 
 Versions 0.1.0 and 0.2.0 were internal builds made while the addon was being written. They were never published.
 
+## [0.5.0] - 2026-10-13
+
+### Added
+- Faster updates when a guildmate is nearby. While another sharing guildmate is within 300 yards on the
+  same map, a position check runs every 2 seconds instead of every 5, and a move of 2 permille counts
+  (instead of 5). Alone, nothing changes. `/whereabouts debug` shows whether fast mode is on.
+
+### Changed
+- The minimap button uses LibDBIcon (the standard library button) when it is installed, so button-collector
+  addons such as HidingBar treat it as a normal button. It keeps the ON/OFF text and the same clicks. The
+  position saved by the old button carries over. Without the library, the old button is used as before.
+- Release builds fetch LibStub, CallbackHandler, LibDataBroker and LibDBIcon at packaging time (`.pkgmeta`
+  externals, loaded by `embeds.xml`). They are not stored in this repository.
+
+### Protocol
+- Unchanged (version 1). Fast mode sends the same messages more often, at most one per 2 seconds.
+
+## [0.4.0] - 2026-10-13
+
+### Added
+- Guildmates on the minimap. A pin appears for each guildmate who is sharing and is on the same map as you,
+  placed by their distance from you in yards and clipped to what the minimap shows. Pins use your chosen
+  theme and opacity, and their own size setting (smaller than on the world map by default), show their name beside them (switchable) and in a tooltip on hover.
+  Works with a rotating minimap. Your own character is never drawn.
+- Setting "Show names next to minimap pins" (on by default; `minimapNames`).
+- Settings "Show guildmates on the minimap" (on by default; needs sharing on) and "Minimap pin size" (50%-200%, separate from the world-map pin size), `minimappins` slash command,
+  `minimapPins` and `minimapSize` in `Defaults.lua`.
+- `/whereabouts debug` prints a MINIMAP line: result of the last update, pins shown, radius, rotation.
+
+### Changed
+- Own-position lookup moved to `OwnPos.lua`, shared by the sender and the minimap. Nothing sent changes.
+
+### Limits
+- Same map only: a guildmate in another zone is not shown on your minimap. The world map still projects them onto parent maps.
+- Positions arrive every few seconds, so pins step rather than glide.
+- If the client cannot report the minimap radius or the map size, the pins are hidden and `/whereabouts debug` says which.
+
+### Protocol
+- Unchanged (version 1).
+
 ## [0.3.1] - 2026-10-03
 
 ### Added

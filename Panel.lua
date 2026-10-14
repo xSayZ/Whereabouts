@@ -37,6 +37,11 @@ function Panel.Build(parent)
   add(W.Step(parent, "Pin opacity", function() return O.Get("alpha") end, stepper("alpha"), pct))
   add(W.Check(parent, "Show names next to pins", function() return O.Get("labels") end,
     function(v) O.Set("labels", v) end))
+  add(W.Step(parent, "Minimap pin size", function() return O.Get("minimapSize") end, stepper("minimapSize"), pct))
+  add(W.Check(parent, "Show guildmates on the minimap", function() return O.Get("minimapPins") end,
+    function(v) O.Set("minimapPins", v) end))
+  add(W.Check(parent, "Show names next to minimap pins", function() return O.Get("minimapNames") end,
+    function(v) O.Set("minimapNames", v) end))
   add(W.Check(parent, "Show minimap button", function() return O.Get("minimapButton") end,
     function(v) O.Set("minimapButton", v) end))
   add(W.Check(parent, "Show On/Off button on the world map", function() return O.Get("mapButton") end,

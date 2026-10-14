@@ -17,6 +17,8 @@ what it receives as a pin with a name. There is no server and no website behind 
 
 ## Use
 - `/whereabouts` opens the settings (Esc > Options > AddOns > Whereabouts).
+- Guildmates also appear on your minimap when they are on the same map as you (setting: "Show guildmates on the minimap").
+- Positions refresh every 5 seconds, or every 2 seconds while a guildmate is within 300 yards.
 - Minimap button: left-click turns sharing on or off, right-click opens settings, drag to move.
 - Open the map (M). Guildmates with sharing on appear as pins with their names.
 
@@ -30,7 +32,7 @@ what it receives as a pin with a name. There is no server and no website behind 
 - Tells you when a guildmate runs a newer version.
 
 ## Commands
-- `/whereabouts on | off | status | version | names | map | minimap | reset`
+- `/whereabouts on | off | status | version | names | map | minimap | minimappins | reset`
 - `/whereabouts debug | probe | testpin` for troubleshooting.
 
 ## Privacy
