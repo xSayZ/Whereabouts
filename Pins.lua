@@ -4,6 +4,14 @@ ns.Pins = Pins
 
 local hooked, held = false, false
 local draw
+local TEST = { x = 500, y = 500 }
+
+-- Options to hide every pin while grouped. Dungeons and raids need none: sharing pauses there.
+function Pins.Suppressed()
+  local O = ns.Options.Get
+  if O("hideInRaid") and IsInRaid and IsInRaid() then return true end
+  return O("hideInGroup") and IsInGroup and IsInGroup() and true or false
+end
 
 -- Hooks are insecure post-hooks only; no Blizzard map code is replaced.
 local function ensureHooks(wm)
@@ -44,39 +52,39 @@ draw = function()
   Pins.w, Pins.h, Pins.cs, Pins.mapID, Pins.canvas = w, h, cs, mapID, canvas
   if not w or not h or w <= 0 or h <= 0 or not cs or cs <= 0 then Pins.why = "bad canvas size" return end
 
-  local O, Pool, Art = ns.Options.Get, ns.PinPool, ns.PinArt
+  local O, Pool, M = ns.Options.Get, ns.PinPool, ns.Merge
+  ov:SetFrameLevel(ns.Layer.Level(wm))
+  if Pins.Suppressed() then
+    Pool.HideFrom(1)
+    Pins.shown, Pins.why = 0, "hidden while grouped"
+    return
+  end
   local th, alpha = ns.Themes.Get(O("theme")), O("alpha")
-  local scale, names = Art.BASE_SCALE * O("size"), O("labels") and not held
-  local n = 0
+  local scale, names = ns.PinArt.BASE_SCALE * O("size"), O("labels") and not held
+  local zones = O("zoneGroups")
+  M.Reset()
   for name, peer in ns.Roster.Iterate() do
     local vx, vy = ns.Project.Get(peer, mapID) -- also maps zone positions onto parent maps
     if vx and not ns.Roster.IsSelf(name) then
-      n = n + 1
-      local p = Pool.Get(n, ov)
-      if p.key ~= name then
-        p.key, p.theme = name, nil
-        p.label = Ambiguate(name, "short")
-        p.name:SetText(p.label)
+      if zones and peer.mapID ~= mapID then -- zoomed out: one pin per zone
+        local zx, zy = ns.Project.Centre(peer)
+        M.Add(name, peer, vx / 1000 * w, vy / 1000 * h, peer.mapID, zx / 1000 * w, zy / 1000 * h)
+      else
+        M.Add(name, peer, vx / 1000 * w, vy / 1000 * h)
       end
-      local cls = ns.Classes.Get(p.label)
-      if p.theme ~= th or p.cls ~= cls then Art.Skin(p, th, cls) end
-      p.px, p.py, p.pm = peer.x, peer.y, peer.mapID
-      p:SetScale(scale)
-      p:SetAlpha(alpha)
-      p.name:SetShown(names)
-      Pool.Put(p, canvas, vx, vy, w, h)
     end
   end
-  if Pins.test then -- /whereabouts testpin: proves rendering independent of the roster
-    n = n + 1
-    local p = Pool.Get(n, ov)
-    p.key, p.label, p.px, p.py, p.pm = "test", "Test pin", 500, 500, nil
-    p.name:SetText("Test pin")
-    Art.Skin(p, th, nil)
+  if Pins.test then M.Add("Test pin", TEST, w / 2, h / 2) end -- /whereabouts testpin: proves rendering without the roster
+  -- Pins overlap when their centres are closer than one icon: icon units to canvas units.
+  local n = M.Run(ns.PinArt.MERGE * scale * ov:GetEffectiveScale() / canvas:GetEffectiveScale())
+  for c = 1, n do
+    local p = Pool.Get(c, ov)
+    M.Fill(p, c, th)
     p:SetScale(scale)
-    p:SetAlpha(alpha)
+    M.Alpha(p, alpha)
     p.name:SetShown(names)
-    Pool.Put(p, canvas, 500, 500, w, h)
+    local x, y = M.At(c)
+    Pool.Put(p, canvas, x, y)
   end
   Pool.HideFrom(n + 1)
   Pins.shown = n
@@ -96,9 +104,16 @@ end)
 
 function Pins.Refresh() dirty:Show() end
 
+local group = CreateFrame("Frame")
+group:RegisterEvent("GROUP_ROSTER_UPDATE")
+group:SetScript("OnEvent", Pins.Refresh)
+
 -- After a theme/size/alpha/labels change: force every pin to be re-skinned.
 function Pins.Restyle()
-  for i = 1, ns.PinPool.Count() do ns.PinPool.At(i).theme = nil end
+  for i = 1, ns.PinPool.Count() do
+    local p = ns.PinPool.At(i)
+    p.theme, p.key = nil, nil -- key too, so labels pick up a new name format
+  end
   Pins.Refresh()
 end
 

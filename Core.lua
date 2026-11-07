@@ -48,6 +48,15 @@ local function status()
   if ns.IsEnabled() and IsInInstance() then ns.Print("paused: inside an instance") end
 end
 
+-- Once per install: sharing is opt-in, so tell new players how to turn it on.
+local function welcome()
+  if ns.Options.Get("welcomed") then return end
+  ns.Options.Set("welcomed", true)
+  if not ns.IsEnabled() then
+    ns.Print("sharing is off, so guildmates cannot see you. Type /whereabouts on to share your location with your guild, or /whereabouts for settings.")
+  end
+end
+
 local function flip(key) ns.Options.Set(key, not ns.Options.Get(key)) end
 
 local commands = {
@@ -60,9 +69,14 @@ local commands = {
   names = function() flip("labels") end,
   map = function() flip("mapButton") end,
   minimap = function() flip("minimapButton") end,
+  zones = function()
+    flip("zoneGroups")
+    ns.Print("group by zone when zoomed out: " .. (ns.Options.Get("zoneGroups") and "ON" or "off"))
+  end,
   reset = function() ns.Options.Reset() ns.Print("appearance reset to defaults") end,
   probe = function() ns.Comms.Probe() end,
   debug = function() ns.Debug.Dump() end,
+  layers = function() ns.Debug.Layers() end,
   testpin = function()
     ns.Print("test pin " .. (ns.Pins.ToggleTest() and "ON: open the map, look at its centre" or "off"))
   end,
@@ -74,7 +88,7 @@ SlashCmdList["WHEREABOUTS"] = function(msg)
   if run then
     run()
   else
-    ns.Print("/whereabouts (settings) | on | off | status | version | names | map | minimap | reset | probe | debug | testpin")
+    ns.Print("/whereabouts (settings) | on | off | status | version | names | zones | map | minimap | reset | probe | debug | layers | testpin")
   end
 end
 
@@ -103,6 +117,8 @@ f:SetScript("OnEvent", function(self, event, arg1)
   else
     ns.Config.Init()
     ns.MinimapButton.Init()
+    ns.MiniPins.Init()
     sync()
+    if event == "PLAYER_LOGIN" then welcome() end
   end
 end)

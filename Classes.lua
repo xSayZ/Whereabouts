@@ -2,8 +2,8 @@ local ADDON, ns = ...
 local Classes = {}
 ns.Classes = Classes
 
--- Class comes from the guild roster, not the wire protocol, so the protocol stays v1.
-local byName, lastScan, started = {}, -60, false
+-- Class and level come from the guild roster, not the wire protocol, so the protocol stays v1.
+local byName, levels, classNames, lastScan, started = {}, {}, {}, -60, false
 local frame = CreateFrame("Frame")
 Classes.known = 0
 Classes.onChange = nil -- Core wires this to Pins.Refresh
@@ -15,8 +15,13 @@ local function scan()
   if total == 0 then return end -- roster not loaded yet; try again on the next event
   lastScan, Classes.known = now, total
   for i = 1, total do
-    local name, _, _, _, _, _, _, _, _, _, class = GetGuildRosterInfo(i)
-    if name and class then byName[Ambiguate(name, "short")] = class end
+    local name, _, _, level, className, _, _, _, _, _, class = GetGuildRosterInfo(i)
+    if name and class then
+      local short = Ambiguate(name, "short")
+      byName[short] = class
+      levels[short] = type(level) == "number" and level > 0 and level or nil
+      classNames[short] = type(className) == "string" and className or nil
+    end
   end
   if Classes.onChange then Classes.onChange() end
 end
@@ -47,6 +52,8 @@ function Classes.Stop()
 end
 
 function Classes.Get(shortName) return byName[shortName] end
+function Classes.Level(shortName) return levels[shortName] end
+function Classes.ClassName(shortName) return classNames[shortName] end -- localised, for display
 
 -- true/false once the roster has loaded, nil while it has not (cannot verify yet).
 function Classes.IsMember(shortName)

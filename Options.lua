@@ -22,6 +22,7 @@ local function valid(key, v)
     return v and clamp(key, v)
   end
   if key == "theme" then return ns.Themes.Exists(v) and v or nil end
+  if key == "nameFormat" then return ns.Names.Valid(v) and v or nil end
   return nil
 end
 
@@ -62,6 +63,6 @@ end
 -- Everything except the sharing switch: a reset should never silently change who sees you.
 function Options.Reset()
   for key, default in pairs(ns.Defaults) do
-    if key ~= "enabled" then Options.Set(key, default) end
+    if key ~= "enabled" and key ~= "welcomed" then Options.Set(key, default) end
   end
 end

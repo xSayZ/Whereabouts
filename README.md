@@ -21,17 +21,21 @@ what it receives as a pin with a name. There is no server and no website behind 
 - Open the map (M). Guildmates with sharing on appear as pins with their names.
 
 ## Features
-- Pins on zone, continent and world maps.
-- Class icon and class-coloured name.
+- Pins on zone, continent and world maps, and on the minimap.
+- Guildmates standing close together share one pin with a count; hover it for every name.
+- Pins stay under quest markers on the world map, and fade when you hover them.
+- Optional: hide all pins while in a group, or only in a raid group.
+- Work in progress, off by default: one pin per zone on continent and world maps (`/whereabouts zones`).
+- Class icon and class-coloured name. Hover a pin for level and class.
 - Themes: Classic, Compact, Solid. Add your own in `UserThemes.lua`.
-- Pin size and opacity.
+- Pin size and opacity. Names as Firstname Lastname, F. Lastname, or initials (FL).
 - Key binding to hide names while held (Esc > Options > Key Bindings > AddOns).
 - Optional On/Off button on the world map (off by default).
 - Tells you when a guildmate runs a newer version.
 
 ## Commands
-- `/whereabouts on | off | status | version | names | map | minimap | reset`
-- `/whereabouts debug | probe | testpin` for troubleshooting.
+- `/whereabouts on | off | status | version | names | zones | map | minimap | reset`
+- `/whereabouts debug | probe | layers | testpin` for troubleshooting.
 
 ## Privacy
 - Off by default. Guild only.

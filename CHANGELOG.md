@@ -5,6 +5,30 @@ Versions: [Semantic Versioning](https://semver.org/). Below 1.0.0, a minor relea
 
 Versions 0.1.0 and 0.2.0 were internal builds made while the addon was being written. They were never published.
 
+## [0.4.0] - 2026-11-08
+
+### Added
+- Pins on the minimap too (smaller, no names, hover for the name). Setting: "Show pins on the minimap", on by default.
+- Guildmates standing so close that their pins would overlap now share one pin showing how many they are.
+  Hover it to see every name in class colour with their position. Zoom in and they split again.
+- World map pins are drawn under quest markers, so quests stay visible and clickable. This covers Blizzard's
+  markers and other addons' map pins with "quest" in their template name.
+  Setting: "Keep pins under quest markers", on by default.
+- A pin under the mouse fades so whatever is beneath shows through, and clicks pass through it to quest
+  icons from other addons. Setting: "Fade pins under the mouse", on by default.
+- Work in progress: "Group by zone when zoomed out". On continent and world maps, guildmates in the same
+  zone share one pin, labelled with the zone and a count. Off by default; `/whereabouts zones` toggles it.
+- Settings to hide all pins while in a group, or only while in a raid group. Both off by default.
+  Inside dungeons and raids pins were already hidden, because sharing pauses there.
+- Hovering a pin shows the guildmate's level and class (from the guild roster). Merged pins show each level.
+- Name format setting: Firstname Lastname (default), F. Lastname, or initials (FL). Applies to pins and tooltips.
+- On first login, if sharing is off, one chat line explains how to turn it on. It is shown once per install.
+- `/whereabouts debug` reports the quest-marker layer and the minimap pins. `/whereabouts layers` lists
+  what is drawn on the open map, to find another addon's quest markers.
+
+### Protocol
+- Unchanged (version 1).
+
 ## [0.3.1] - 2026-10-03
 
 ### Added
