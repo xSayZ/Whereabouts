@@ -3,6 +3,7 @@ local Art = {}
 ns.PinArt = Art
 
 Art.BASE_SCALE = 0.75 -- multiplied by the player's size setting
+Art.MERGE = 20 -- pins whose centres are closer than this (pin units) merge into one
 local CLASSES = "Interface\\WorldStateFrame\\Icons-Classes"
 local MAP = "Interface\\Icons\\INV_Misc_Map_01"
 
@@ -10,11 +11,16 @@ function Art.New(parent, onEnter, onLeave)
   local p = CreateFrame("Frame", nil, parent)
   p:SetSize(31, 31)
   p:EnableMouse(true)
+  if p.SetPropagateMouseClicks then pcall(p.SetPropagateMouseClicks, p, true) end -- clicks reach icons below
   p.bg = p:CreateTexture(nil, "BACKGROUND")
   p.edge = p:CreateTexture(nil, "BACKGROUND")
   p.icon = p:CreateTexture(nil, "ARTWORK")
   p.ring = p:CreateTexture(nil, "OVERLAY")
   p.name = p:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+  p.num = p:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+  p.num:SetPoint("CENTER", 0, 1)
+  p.num:Hide()
+  p.members, p.mpeers = {}, {} -- names and peers in a merged pin (Merge.lua)
   p:SetScript("OnEnter", onEnter)
   p:SetScript("OnLeave", onLeave)
   return p
@@ -99,4 +105,16 @@ function Art.Skin(p, th, class)
   skinFrame(p, th)
   skinIcon(p, th, class)
   skinLabel(p, th, class)
+end
+
+-- Merged pins show how many players they hold over a dimmed icon.
+function Art.SetCount(p, n)
+  if n > 1 then
+    p.num:SetText(n)
+    p.num:Show()
+    p.icon:SetAlpha(0.35)
+  else
+    p.num:Hide()
+    p.icon:SetAlpha(1)
+  end
 end

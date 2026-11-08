@@ -2,6 +2,39 @@ local ADDON, ns = ...
 local Debug = {}
 ns.Debug = Debug
 
+-- What is drawn on the open world map: the map's pin templates (other addons' too), and frames
+-- other addons put on the canvas directly. Used to find a quest addon's markers for Layer.lua.
+local function layers()
+  local wm, P = WorldMapFrame, ns.Print
+  if not wm then return P("no world map") end
+  if type(wm.pinPools) == "table" and wm.EnumeratePinsByTemplate then
+    for t in pairs(wm.pinPools) do
+      local n, low = 0, nil
+      for pin in wm:EnumeratePinsByTemplate(t) do
+        n = n + 1
+        local l = pin:GetFrameLevel()
+        if not low or l < low then low = l end
+      end
+      if n > 0 then P(format("TEMPLATE %s | active %d | lowest level %d", tostring(t), n, low)) end
+    end
+  else
+    P("this client has no map pin pools")
+  end
+  local canvas = wm.GetCanvas and wm:GetCanvas() or (wm.ScrollContainer and wm.ScrollContainer.Child)
+  local kids = canvas and { canvas:GetChildren() } or {}
+  for i = 1, #kids do
+    local f = kids[i]
+    local name = f.GetName and f:GetName()
+    if name and f:IsShown() then P(format("CANVAS FRAME %s | level %d", name, f:GetFrameLevel())) end
+  end
+  P("OVERLAY " .. tostring(ns.Layer.why))
+end
+
+function Debug.Layers()
+  local ok, err = pcall(layers)
+  if not ok then ns.Print("layers failed: " .. tostring(err)) end
+end
+
 -- Read-only report of every stage: send, receive, decode, roster, draw.
 function Debug.Dump()
   local P, st = ns.Print, ns.Comms.stats
@@ -25,7 +58,8 @@ function Debug.Dump()
   local pm = ns.Pins
   P(format("DRAW calls %s | last result: %s | pins shown %s | viewed mapID %s",
     tostring(pm.draws), tostring(pm.why), tostring(pm.shown), tostring(pm.mapID)))
-  P(format("CANVAS w %s h %s scale %s", tostring(pm.w), tostring(pm.h), tostring(pm.cs)))
+  P(format("CANVAS w %s h %s scale %s | layer %s", tostring(pm.w), tostring(pm.h), tostring(pm.cs), tostring(ns.Layer.why)))
+  P(format("MINIMAP pins shown %d | last result: %s", ns.MiniPins.shown, tostring(ns.MiniPins.why)))
   local p1, cv = pm.First(), pm.canvas
   if p1 and cv then
     P(format("PIN1 shown %s visible %s alpha %.2f level %d strata %s size %.0fx%.0f left %s bottom %s",

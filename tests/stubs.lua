@@ -77,6 +77,11 @@ function S.install()
   _G.UnitName = function() return S.myName end
   _G.IsInGuild = function() return S.inGuild end
   _G.IsInInstance = function() return S.inInstance end
+  _G.IsInGroup = function() return S.inGroup end
+  _G.IsInRaid = function() return S.inRaid end
+  _G.CreateVector2D = function(x, y)
+    return { x = x, y = y, SetXY = function(v, a, b) v.x, v.y = a, b end, GetXY = function(v) return v.x, v.y end }
+  end
   _G.GetCursorPosition = function() return 0, 0 end
   _G.Enum = { SendAddonMessageResult = { Success = 0, AddonMessageThrottle = 3, AddOnMessageLockdown = 11 },
               RegisterAddonMessagePrefixResult = { Success = 0, DuplicatePrefix = 1 } }
@@ -105,12 +110,17 @@ function S.install()
     GetPlayerMapPosition = function() return { GetXY = function() return S.pos.x, S.pos.y end } end,
     GetMapInfo = function(id) return { parentMapID = (S.parents or {})[id] or 0, name = "Map" .. id } end,
     GetMapRectOnMap = function(id, top) return unpack(S.rects[id .. ":" .. top] or {}) end,
+    -- S.world[id] = { cont, left, top, w, h } in yards; world x points north, world y west
+    GetWorldPosFromMapPos = function(id, v)
+      local r = S.world[id]
+      if r then return r.cont, _G.CreateVector2D(r.top - v.y * r.h, r.left - v.x * r.w) end
+    end,
   }
-  S.parents, S.rects = {}, {}
+  S.parents, S.rects, S.world = {}, {}, {}
   _G.GetNumGuildMembers = function() return S.rosterLoaded and #S.roster or 0 end
   _G.GetGuildRosterInfo = function(i)
     local m = S.roster[i]
-    return m[1], nil, nil, nil, nil, nil, nil, nil, nil, nil, m[2]
+    return m[1], nil, nil, m[3], m[4], nil, nil, nil, nil, nil, m[2] -- name, level, localised class, class file
   end
   _G.RAID_CLASS_COLORS = { WARRIOR = { r = 0.78, g = 0.61, b = 0.43 }, MAGE = { r = 0.25, g = 0.78, b = 0.92 } }
   _G.CLASS_ICON_TCOORDS = { WARRIOR = { 0, 0.25, 0, 0.25 }, MAGE = { 0.25, 0.5, 0, 0.25 } }

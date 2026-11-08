@@ -33,6 +33,13 @@ assert(registered and registered.name == "Whereabouts", "settings category regis
 assert(WhereaboutsMinimapButton and WhereaboutsMinimapButton.parent == _G.Minimap, "named minimap button")
 assert(WhereaboutsMinimapButton.shown == true)
 assert(ns.Comms.IsRunning() == false and #S.sent == 0, "nothing sent until the player opts in")
+local hints = 0
+for _, m in ipairs(S.printed) do if m:find("/whereabouts on", 1, true) then hints = hints + 1 end end
+assert(hints == 1 and WhereaboutsDB.welcomed == true, "first login: one hint to turn sharing on")
+core.scripts.OnEvent(core, "PLAYER_LOGIN"); ns.Options.Reset()
+core.scripts.OnEvent(core, "PLAYER_LOGIN")
+for _, m in ipairs(S.printed) do if m:find("/whereabouts on", 1, true) then hints = hints - 1 end end
+assert(hints == 0, "never again, not even after a reset")
 
 local function mapButtons()
   local n = 0
@@ -62,6 +69,8 @@ slash("minimap"); assert(WhereaboutsMinimapButton.shown == false); slash("minima
 ns.Options.Set("theme", "solid"); ns.Options.Set("size", 1.5)
 slash("reset"); assert(WhereaboutsDB.theme == "classic" and WhereaboutsDB.size == 1.0)
 slash("version"); assert(S.printed[#S.printed - 1]:find("version " .. S.tocVersion, 1, true))
+slash("zones"); assert(WhereaboutsDB.zoneGroups == true and S.printed[#S.printed]:find("ON"))
+slash("zones"); assert(WhereaboutsDB.zoneGroups == false)
 slash("nonsense"); assert(S.printed[#S.printed]:find("/whereabouts"))
 
 -- Leaving for an instance stops everything and clears the roster

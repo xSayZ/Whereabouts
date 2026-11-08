@@ -37,6 +37,20 @@ function Panel.Build(parent)
   add(W.Step(parent, "Pin opacity", function() return O.Get("alpha") end, stepper("alpha"), pct))
   add(W.Check(parent, "Show names next to pins", function() return O.Get("labels") end,
     function(v) O.Set("labels", v) end))
+  add(W.Cycle(parent, "Name format", function() return ns.Names.Label(O.Get("nameFormat")) end,
+    function() O.Set("nameFormat", ns.Names.Next(O.Get("nameFormat"))) end))
+  add(W.Check(parent, "Show pins on the minimap", function() return O.Get("minimapPins") end,
+    function(v) O.Set("minimapPins", v) end))
+  add(W.Check(parent, "Keep pins under quest markers", function() return O.Get("underQuests") end,
+    function(v) O.Set("underQuests", v) end))
+  add(W.Check(parent, "Fade pins under the mouse", function() return O.Get("hoverFade") end,
+    function(v) O.Set("hoverFade", v) end))
+  add(W.Check(parent, "Group by zone when zoomed out (WIP)", function() return O.Get("zoneGroups") end,
+    function(v) O.Set("zoneGroups", v) end))
+  add(W.Check(parent, "Hide pins while in a group", function() return O.Get("hideInGroup") end,
+    function(v) O.Set("hideInGroup", v) end))
+  add(W.Check(parent, "Hide pins while in a raid group", function() return O.Get("hideInRaid") end,
+    function(v) O.Set("hideInRaid", v) end))
   add(W.Check(parent, "Show minimap button", function() return O.Get("minimapButton") end,
     function(v) O.Set("minimapButton", v) end))
   add(W.Check(parent, "Show On/Off button on the world map", function() return O.Get("mapButton") end,

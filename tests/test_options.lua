@@ -1,5 +1,5 @@
 local S = dofile("tests/stubs.lua"); S.install()
-local ns = S.ns(); S.load(ns, { "Defaults", "Options", "Themes" })
+local ns = S.ns(); S.load(ns, { "Defaults", "Options", "Names", "Themes" })
 local O = ns.Options
 
 -- Before Init the defaults are served, so nothing sees a nil
