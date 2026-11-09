@@ -18,7 +18,7 @@ read_globals = {
   "AddonCompartmentFrame", "Ambiguate", "CLASS_ICON_TCOORDS", "C_AddOns", "C_CVar", "C_ChatInfo", "C_GuildInfo",
   "C_Map", "C_Timer", "CreateFrame", "CreateVector2D", "Enum", "GameTooltip", "GetAddOnMetadata", "GetCVar",
   "GetCursorPosition", "GetGuildRosterInfo", "GetMinimapShape", "GetNumGuildMembers", "GetPlayerFacing", "GetTime",
-  "GuildRoster", "IsInGroup", "IsInGuild", "IsInInstance", "IsInRaid", "IsIndoors",
+  "GuildRoster", "IsInGroup", "IsInGuild", "IsInInstance", "IsInRaid", "IsIndoors", "LibStub",
   "Minimap", "RAID_CLASS_COLORS", "Settings", "UIParent", "UnitName", "WorldMapFrame", "format",
   "hooksecurefunc", "issecretvalue", "strlower", "strtrim", "wipe",
 }

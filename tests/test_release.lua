@@ -40,8 +40,8 @@ assert(fn and keys:find("function " .. fn, 1, true), "Bindings.xml calls an unde
 local name = xml:match('name="([%w_]+)"')
 assert(keys:find("BINDING_NAME_" .. name, 1, true) and keys:find("BINDING_HEADER_", 1, true))
 
--- Sharing must default to off, and the update link must be a plain string setting
-assert(read("Defaults.lua"):find("enabled = false"), "sharing must default to off")
+-- Sharing defaults to on (0.5.0), and the update link must be a plain string setting
+assert(read("Defaults.lua"):find("enabled = true"), "sharing defaults to on")
 local url = read("Version.lua"):match('Version.UPDATE_URL = "(.-)"')
 assert(url and (url == "" or url:match("^https://")), "UPDATE_URL must be empty or an https link")
 

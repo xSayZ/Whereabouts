@@ -30,6 +30,7 @@ end
 function Options.Init()
   WhereaboutsDB = WhereaboutsDB or {}
   db = WhereaboutsDB
+  local existing = next(db) ~= nil
   if db.hideMinimap ~= nil then -- name used before 0.3.0
     db.minimapButton, db.hideMinimap = not db.hideMinimap, nil
   end
@@ -38,6 +39,12 @@ function Options.Init()
     if db[key] ~= nil then v = valid(key, db[key]) end
     if v == nil then v = default end
     db[key] = v
+  end
+  -- Before 0.5.0 sharing was opt-in, so a saved "off" is usually just the old default. Switch it on once;
+  -- Core tells the player. Later choices stick.
+  if not db.onByDefault then
+    db.onByDefault = true
+    if existing and not db.enabled then db.enabled, Options.switchedOn = true, true end
   end
 end
 
@@ -63,6 +70,6 @@ end
 -- Everything except the sharing switch: a reset should never silently change who sees you.
 function Options.Reset()
   for key, default in pairs(ns.Defaults) do
-    if key ~= "enabled" and key ~= "welcomed" then Options.Set(key, default) end
+    if key ~= "enabled" and key ~= "welcomed" and key ~= "onByDefault" then Options.Set(key, default) end
   end
 end

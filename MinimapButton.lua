@@ -6,6 +6,8 @@ local cos, sin = math.cos, math.sin -- radians (the bare globals use degrees)
 local atan2 = math.atan2 or math.atan -- fallback mirrors QuestlineJournal; atan2 may be absent
 local DEFAULT_ANGLE = math.rad(225)
 local btn, label, inited
+local DRAG_MIN = 8 -- pixels; the game starts a drag after a tiny move, which used to swallow the click
+local downX, downY, moved
 
 -- Assumes a round minimap; square-minimap addons may need the button dragged by hand.
 local function place()
@@ -19,12 +21,18 @@ local function onDragUpdate()
   local mx, my = Minimap:GetCenter()
   local cx, cy = GetCursorPosition()
   local s = Minimap:GetEffectiveScale()
+  if not mx or not cx then return end
+  if not moved then
+    if downX and (cx - downX) ^ 2 + (cy - downY) ^ 2 < (DRAG_MIN * s) ^ 2 then return end
+    moved = true
+  end
   WhereaboutsDB.minimapAngle = atan2(cy / s - my, cx / s - mx)
   place()
 end
 
 -- Text colour follows the sharing switch; visibility follows the option.
 function MB.Refresh()
+  ns.MinimapBroker.Refresh(ns.IsEnabled(), ns.Options.Get("minimapButton"))
   if not btn then return end
   if ns.IsEnabled() then
     label:SetText("ON")
@@ -36,15 +44,30 @@ function MB.Refresh()
   if ns.Options.Get("minimapButton") then btn:Show() else btn:Hide() end
 end
 
+-- Shared by our own button and the LibDBIcon one.
+local function fillTooltip(tt)
+  tt:SetText("Whereabouts " .. ns.Version.current)
+  tt:AddLine(ns.Config.StatusText(), 1, 1, 1)
+  if ns.Version.newest then tt:AddLine("Update available: " .. ns.Version.newest, 1, 0.82, 0) end
+  tt:AddLine("Left-click: turn sharing on/off", 0.8, 0.8, 0.8)
+  tt:AddLine("Right-click: settings", 0.8, 0.8, 0.8)
+  tt:AddLine("Drag: move button", 0.8, 0.8, 0.8)
+end
+
 local function onEnter(self)
   GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-  GameTooltip:SetText("Whereabouts " .. ns.Version.current)
-  GameTooltip:AddLine(ns.Config.StatusText(), 1, 1, 1)
-  if ns.Version.newest then GameTooltip:AddLine("Update available: " .. ns.Version.newest, 1, 0.82, 0) end
-  GameTooltip:AddLine("Left-click: turn sharing on/off", 0.8, 0.8, 0.8)
-  GameTooltip:AddLine("Right-click: settings", 0.8, 0.8, 0.8)
-  GameTooltip:AddLine("Drag: move button", 0.8, 0.8, 0.8)
+  fillTooltip(GameTooltip)
   GameTooltip:Show()
+end
+
+local function click(_, button)
+  if button == "RightButton" then
+    ns.Config.Open()
+  elseif ns.IsEnabled() then
+    ns.Disable()
+  else
+    ns.Enable()
+  end
 end
 
 local function build()
@@ -61,7 +84,7 @@ local function build()
   bg:SetSize(20, 20)
   bg:SetPoint("TOPLEFT", 7, -5)
   bg:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
-  local icon = btn:CreateTexture(nil, "ARTWORK")
+  local icon = btn:CreateTexture("WhereaboutsMinimapButtonIcon", "ARTWORK") -- collectors look up <button>Icon
   icon:SetSize(17, 17)
   icon:SetPoint("TOPLEFT", 7, -6)
   icon:SetTexture("Interface\\Icons\\INV_Misc_Map_01")
@@ -81,20 +104,17 @@ local function build()
   local font, size = label:GetFont()
   if font then label:SetFont(font, size, "OUTLINE") end
 
-  btn:SetScript("OnClick", function(_, button)
-    if button == "RightButton" then
-      ns.Config.Open()
-    elseif ns.IsEnabled() then
-      ns.Disable()
-    else
-      ns.Enable()
-    end
-  end)
+  btn:SetScript("OnClick", click)
+  btn:SetScript("OnMouseDown", function() downX, downY = GetCursorPosition() end)
   btn:SetScript("OnDragStart", function(self)
     GameTooltip:Hide()
+    moved = false
     self:SetScript("OnUpdate", onDragUpdate)
   end)
-  btn:SetScript("OnDragStop", function(self) self:SetScript("OnUpdate", nil) end)
+  btn:SetScript("OnDragStop", function(self)
+    self:SetScript("OnUpdate", nil)
+    if not moved then click(self, "LeftButton") end -- barely moved: the player meant to click
+  end)
   btn:SetScript("OnEnter", onEnter)
   btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
   place()
@@ -103,6 +123,6 @@ end
 function MB.Init()
   if inited or not Minimap then return end
   inited = true
-  build()
+  if not ns.MinimapBroker.Init(click, fillTooltip) then build() end
   MB.Refresh()
 end

@@ -5,6 +5,28 @@ Versions: [Semantic Versioning](https://semver.org/). Below 1.0.0, a minor relea
 
 Versions 0.1.0 and 0.2.0 were internal builds made while the addon was being written. They were never published.
 
+## [0.5.0] - 2026-11-09
+
+### Changed
+- Sharing is now on by default. On first login you get one chat line saying guildmates can see you and how to
+  stop (`/whereabouts off`, or left-click the minimap button).
+- Existing installs that had sharing saved as off are switched on once, with that same chat line. If you turn
+  it off again, it stays off.
+
+### Fixed
+- Settings not carrying over between versions. The game saves settings by addon folder name, so a folder
+  named `Whereabouts-0.4.0` (or a renamed `.toc`) started fresh on every update. Whereabouts now warns at
+  login when its folder is not named `Whereabouts`. The README says how to install it.
+- Minimap button left-click sometimes did nothing: a tiny mouse movement during the click started a drag
+  instead. The button now moves only after the cursor travels a few pixels; shorter drags count as a click.
+- Minimap button inside button collectors (Leatrix Plus "Combine addon buttons" and similar) showed a blank
+  icon, a generic "custom button" tooltip and no on/off state. When another addon has loaded LibDBIcon,
+  Whereabouts now registers its button through it: map icon, its own tooltip, tinted green while sharing and
+  red while off. Whereabouts ships no library code; without LibDBIcon it keeps its own button.
+
+### Protocol
+- Unchanged (version 1).
+
 ## [0.4.0] - 2026-11-08
 
 ### Added

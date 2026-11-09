@@ -1,6 +1,6 @@
 # Whereabouts: WoW Forever guild map-sharing addon
 
-Opt-in addon: guild members who enable it appear as pins on each other's world map. Off by default.
+Guild members with the addon appear as pins on each other's world map. Sharing is on by default (since 0.5.0); players can turn it off.
 Design: `docs/ARCHITECTURE.md`. Read it only when changing module boundaries or the wire protocol.
 Player docs that ship in the zip: `README.md`, `CHANGELOG.md`.
 
@@ -38,10 +38,10 @@ Player docs that ship in the zip: `README.md`, `CHANGELOG.md`.
 ## Conventions
 - Namespace: `local ADDON, ns = ...`. Modules attach to `ns`. Cross-module calls go through `ns` only.
 - Globals, and only these: `WhereaboutsDB` (SavedVariables), the slash handler, the named frame
-  `WhereaboutsMinimapButton` (so button collectors find it), and for the key binding `WhereaboutsHideNamesKey`
+  `WhereaboutsMinimapButton` and its texture `WhereaboutsMinimapButtonIcon` (so button collectors find them), and for the key binding `WhereaboutsHideNamesKey`
   plus the two `BINDING_` strings.
 - Settings: add a key to `Defaults.lua` (and a range in `ns.Ranges` if numeric). Read with `ns.Options.Get`, write
-  with `ns.Options.Set`. Never touch `WhereaboutsDB` directly, except `minimapAngle`.
+  with `ns.Options.Set`. Never touch `WhereaboutsDB` directly, except `minimapAngle` and `minimapIcon` (LibDBIcon's position table).
 - Themes: data only (`Themes.lua`, `UserThemes.lua`). Drawing code reads theme fields; it never names a theme.
 - Wire format lives in `Wire.lua`. Any format change bumps `VERSION` there. An additive message keeps the version;
   older builds must be able to ignore it.
@@ -56,6 +56,7 @@ Player docs that ship in the zip: `README.md`, `CHANGELOG.md`.
 - Draw or store our own character as a peer. Self is excluded by normalised name (`Roster.IsSelf`) and by echo
   learning in `Inbox.lua`. Never hide other players because a self check is unsure: fail towards showing.
 - Add third-party code or art without asking and without noting its license. The project is MIT (`LICENSE`).
-- Add third-party libraries without asking. The reference addon QuestlineJournal uses none.
+- Add third-party libraries without asking. The reference addon QuestlineJournal uses none. Exception (approved 0.5.0):
+  `MinimapBroker.lua` uses LibDataBroker/LibDBIcon via `LibStub` only if another addon already loaded them; we ship none.
 - Claim an API works on Forever without a source: an in-game result from the maintainer, or a document. Do not add blanket "untested
   in game" disclaimers to replies or docs: the maintainer play-tests every release. Name what is unknown, specifically, only when it affects a decision.

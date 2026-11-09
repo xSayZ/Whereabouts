@@ -11,7 +11,7 @@ The maintainer play-tests every release; an entry moves to GAME when that specif
 - DOC: `RegisterAddonMessagePrefix` returns `Enum.RegisterAddonMessagePrefixResult` on Forever build 1.60.1.69913 (Brattlof/Firekeeper PR #6).
 - DOC: Midnight blocks SendAddonMessage inside instances (third-party API summaries, not Blizzard text). Forever status: UNVERIFIED.
 - DOC: Prefix max 16 chars, message max 255 chars.
-- DOC: third-party kit reports SavedVariables do not persist between launches on the Forever beta (Thunderz96/forever-addon-kit). UNVERIFIED by me; harmless here since sharing defaults to off.
+- GAME: SavedVariables persist on Forever (maintainer's WTF/.../SavedVariables/Whereabouts*.lua, 2026-11-08). The file is keyed by addon folder name, so a renamed folder starts fresh.
 - UNVERIFIED: `issecretvalue` global exists on Forever (Midnight feature); code guards on its existence.
 - GAME: `WorldMapFrame:GetCanvas()` exists on Forever (`/whereabouts debug`: GetCanvas true).
 - DOC: `OnMapChanged`, `OnCanvasScaleChanged` exist on Forever (hooks are guarded by a type check).
