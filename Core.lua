@@ -48,12 +48,16 @@ local function status()
   if ns.IsEnabled() and IsInInstance() then ns.Print("paused: inside an instance") end
 end
 
--- Once per install: sharing is opt-in, so tell new players how to turn it on.
+-- Once per install (and once after the switch to on-by-default): say that guildmates can see you.
 local function welcome()
-  if ns.Options.Get("welcomed") then return end
+  if ADDON ~= "Whereabouts" then -- saved settings are keyed by folder name, so they would reset on every update
+    ns.Print(format("installed in the folder \"%s\". Rename it to Whereabouts (and its .toc to Whereabouts.toc), or your settings will not carry over between versions.", ADDON))
+  end
+  if ns.Options.Get("welcomed") and not ns.Options.switchedOn then return end
   ns.Options.Set("welcomed", true)
-  if not ns.IsEnabled() then
-    ns.Print("sharing is off, so guildmates cannot see you. Type /whereabouts on to share your location with your guild, or /whereabouts for settings.")
+  ns.Options.switchedOn = nil
+  if ns.IsEnabled() then
+    ns.Print("sharing is on: guildmates with Whereabouts see you on their map. Type /whereabouts off to stop, or /whereabouts for settings.")
   end
 end
 

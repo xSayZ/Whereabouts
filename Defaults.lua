@@ -2,9 +2,9 @@ local ADDON, ns = ...
 
 -- CONFIG FILE. Edit the values below to change what a fresh install starts with.
 -- Players can still change everything in game: Esc > Options > AddOns > Whereabouts, or /whereabouts.
--- If the game does not keep saved settings between sessions, edit this file to make a choice permanent.
+-- Settings are saved per addon folder name: keep the folder named exactly Whereabouts, or each update starts fresh.
 ns.Defaults = {
-  enabled = false,       -- share your location with your guild. Keep false: sharing is opt-in.
+  enabled = true,        -- share your location with your guild. Players can turn it off at any time.
   theme = "classic",     -- classic, compact, solid, or any id you add in UserThemes.lua
   size = 1.0,            -- pin size multiplier
   alpha = 1.0,           -- pin opacity
@@ -18,7 +18,8 @@ ns.Defaults = {
   zoneGroups = false,    -- WIP: on continent and world maps, one pin per zone
   minimapButton = true,  -- show the minimap button
   mapButton = false,     -- show the On/Off button on the world map
-  welcomed = false,      -- the one-time "sharing is off" chat hint has been shown
+  welcomed = false,      -- the one-time "sharing is on" chat notice has been shown
+  onByDefault = false,   -- internal: install has been moved to on-by-default (0.5.0)
 }
 
 -- Allowed range for numeric options: { min, max, step }.

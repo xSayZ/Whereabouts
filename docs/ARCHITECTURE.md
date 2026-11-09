@@ -74,7 +74,7 @@ Toggle:  off -> send "OFF" once -> stop timers and receiving -> clear roster and
 | Own name format unknown | Name compare + echo learning; never hide others |
 | Map art covering pins | Own overlay at frame level 5000, clipped to the scroll area |
 | Forever API drift | API calls isolated in Comms, Inbox, Pins, PinPool, Config |
-| Modified guild client logging positions | Accepted limitation; opt-in, default off |
+| Modified guild client logging positions | Accepted limitation; on by default since 0.5.0, can be turned off |
 | Settings not persisting | `Defaults.lua` is editable |
 
 ## Update notice

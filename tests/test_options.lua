@@ -3,7 +3,7 @@ local ns = S.ns(); S.load(ns, { "Defaults", "Options", "Names", "Themes" })
 local O = ns.Options
 
 -- Before Init the defaults are served, so nothing sees a nil
-assert(O.Get("enabled") == false and O.Get("size") == 1.0)
+assert(O.Get("enabled") == true and O.Get("size") == 1.0)
 assert(O.Set("size", 2) == false, "Set before Init must be refused")
 
 -- Init fills defaults, cleans bad saved values, migrates the 0.1/0.2 name
@@ -34,4 +34,13 @@ O.Set("enabled", false); O.Set("enabled", true)
 O.Reset()
 assert(O.Get("size") == 1.0 and O.Get("theme") == "classic" and O.Get("labels") == true)
 assert(O.Get("enabled") == true, "reset must not change who can see you")
-assert(ns.Defaults.enabled == false, "sharing must default to off")
+assert(ns.Defaults.enabled == true, "sharing defaults to on")
+
+-- 0.5.0 migration: an existing install saved as off is switched on once; later choices stick
+WhereaboutsDB = { enabled = false, size = 1.5 }
+O.switchedOn = nil; O.Init()
+assert(WhereaboutsDB.enabled == true and O.switchedOn == true and WhereaboutsDB.onByDefault == true, "old off switched on")
+O.Set("enabled", false); O.switchedOn = nil; O.Init()
+assert(WhereaboutsDB.enabled == false and O.switchedOn == nil, "off chosen after the switch is kept")
+WhereaboutsDB = nil; O.Init()
+assert(WhereaboutsDB.enabled == true and O.switchedOn == nil, "fresh install: on, nothing to announce")

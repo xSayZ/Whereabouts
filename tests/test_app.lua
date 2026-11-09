@@ -26,19 +26,20 @@ local function slash(cmd) SlashCmdList.WHEREABOUTS(cmd) end
 
 ----- With the game's Settings panel -----
 local ns, core, state = boot(true)
-assert(WhereaboutsDB.enabled == false and WhereaboutsDB.mapButton == false, "off by default, map button off by default")
+assert(WhereaboutsDB.enabled == true and WhereaboutsDB.mapButton == false, "on by default, map button off by default")
 core.scripts.OnEvent(core, "PLAYER_LOGIN")
 local _, registered = state()
 assert(registered and registered.name == "Whereabouts", "settings category registered under AddOns")
 assert(WhereaboutsMinimapButton and WhereaboutsMinimapButton.parent == _G.Minimap, "named minimap button")
 assert(WhereaboutsMinimapButton.shown == true)
-assert(ns.Comms.IsRunning() == false and #S.sent == 0, "nothing sent until the player opts in")
+assert(ns.Comms.IsRunning() == true, "on by default: sharing starts at login")
 local hints = 0
-for _, m in ipairs(S.printed) do if m:find("/whereabouts on", 1, true) then hints = hints + 1 end end
-assert(hints == 1 and WhereaboutsDB.welcomed == true, "first login: one hint to turn sharing on")
+for _, m in ipairs(S.printed) do if m:find("/whereabouts off", 1, true) then hints = hints + 1 end end
+assert(hints == 1 and WhereaboutsDB.welcomed == true, "first login: one notice that sharing is on")
+for _, m in ipairs(S.printed) do assert(not m:find("Rename it", 1, true), "no folder warning when named Whereabouts") end
 core.scripts.OnEvent(core, "PLAYER_LOGIN"); ns.Options.Reset()
 core.scripts.OnEvent(core, "PLAYER_LOGIN")
-for _, m in ipairs(S.printed) do if m:find("/whereabouts on", 1, true) then hints = hints - 1 end end
+for _, m in ipairs(S.printed) do if m:find("/whereabouts off", 1, true) then hints = hints - 1 end end
 assert(hints == 0, "never again, not even after a reset")
 
 local function mapButtons()
@@ -62,6 +63,17 @@ assert(label and label.tcolor[2] == 1 and label.tcolor[1] < 0.5, "ON is green")
 slash("off")
 assert(S.sent[#S.sent].msg == "1|OFF" and not ns.Comms.IsRunning(), "off sends one stop message")
 assert(label.text == "OFF" and label.tcolor[1] == 1 and label.tcolor[2] < 0.5, "OFF is red")
+
+-- A click that wobbles into a tiny drag still toggles; a real drag moves the button instead
+local mb, sc = WhereaboutsMinimapButton, WhereaboutsMinimapButton.scripts
+_G.Minimap.GetCenter = function() return 0, 0 end
+sc.OnMouseDown(mb); sc.OnDragStart(mb); mb.scripts.OnUpdate(mb, 0.1); sc.OnDragStop(mb)
+assert(WhereaboutsDB.enabled == true and label.text == "ON", "tiny drag counts as a click")
+_G.GetCursorPosition = function() return 50, 0 end
+sc.OnDragStart(mb); mb.scripts.OnUpdate(mb, 0.1); sc.OnDragStop(mb)
+assert(WhereaboutsDB.enabled == true and WhereaboutsDB.minimapAngle, "real drag moves, does not toggle")
+_G.GetCursorPosition = function() return 0, 0 end
+WhereaboutsDB.minimapAngle = nil; slash("off")
 
 -- Options through commands
 slash("names"); assert(WhereaboutsDB.labels == false); slash("names"); assert(WhereaboutsDB.labels == true)

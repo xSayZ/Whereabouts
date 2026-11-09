@@ -7,12 +7,14 @@
 Whereabouts shows your guildmates on the world map, so you can see where they are without being in a group
 with them. It is made for WoW Forever.
 
-It is opt-in: nothing is sent or shown until you turn it on. Every player who has it on shares their map and
+Sharing is on by default; `/whereabouts off` (or a left-click on the minimap button) stops it. Every player who has it on shares their map and
 position with their own guild over the game's guild addon channel, and every guildmate who has the addon draws
 what it receives as a pin with a name. There is no server and no website behind it.
 
 ## Install
 - Copy the `Whereabouts` folder to `World of Warcraft/_classic_beta_/Interface/AddOns/`.
+- The folder must be named exactly `Whereabouts` (not `Whereabouts-0.5.0`, and not nested inside another
+  folder). The game saves settings by folder name, so a renamed folder loses them on every update.
 - Everyone who wants to see or be seen needs the addon.
 
 ## Use
@@ -38,16 +40,16 @@ what it receives as a pin with a name. There is no server and no website behind 
 - `/whereabouts debug | probe | layers | testpin` for troubleshooting.
 
 ## Privacy
-- Off by default. Guild only.
+- On by default; `/whereabouts off` stops it. Guild only.
 - Sent: your map ID and two position numbers. Nothing inside instances or while sharing is off.
 - Your own pin is never shown.
-- A guildmate with a modified client could log positions. Turn it on only if you trust your guild.
+- A guildmate with a modified client could log positions. Turn it off if you do not trust your guild.
 - The source is open. Read it before you trust it.
 
 ## Settings in files
 - `Defaults.lua`: starting values for every setting.
 - `UserThemes.lua`: your own themes.
-- Settings may not survive a restart on the Forever beta. Edit `Defaults.lua` to keep a choice.
+- Settings are saved per folder name: keep the folder named `Whereabouts` so they carry over between versions.
 
 ## About this project
 Whereabouts is written with Claude, Anthropic's AI assistant, used as a programming assistant.
