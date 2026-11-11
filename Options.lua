@@ -67,9 +67,10 @@ function Options.Subscribe(fn)
   listeners[#listeners + 1] = fn
 end
 
--- Everything except the sharing switch: a reset should never silently change who sees you.
+-- Appearance only: a reset should never silently change who sees you or what we announce.
+local KEEP = { enabled = true, welcomed = true, onByDefault = true, devMode = true }
 function Options.Reset()
   for key, default in pairs(ns.Defaults) do
-    if key ~= "enabled" and key ~= "welcomed" and key ~= "onByDefault" then Options.Set(key, default) end
+    if not KEEP[key] then Options.Set(key, default) end
   end
 end

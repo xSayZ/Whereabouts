@@ -30,8 +30,9 @@ assert(O.Set("theme", "solid") and O.Get("theme") == "solid")
 assert(O.Set("unknown-key", 1) == false)
 
 -- Reset restores appearance but never touches the sharing switch
-O.Set("enabled", false); O.Set("enabled", true)
+O.Set("enabled", false); O.Set("enabled", true); O.Set("devMode", true)
 O.Reset()
+assert(O.Get("devMode") == true, "reset must not start announcing an unpublished version"); O.Set("devMode", false)
 assert(O.Get("size") == 1.0 and O.Get("theme") == "classic" and O.Get("labels") == true)
 assert(O.Get("enabled") == true, "reset must not change who can see you")
 assert(ns.Defaults.enabled == true, "sharing defaults to on")

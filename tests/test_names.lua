@@ -26,7 +26,10 @@ O.Set("nameFormat", "short"); ns.Pins.Restyle(); S.redraw()
 assert(p.name.text == "C. Ohlson" and p.cls == "WARRIOR", tostring(p.name.text))
 local title
 GameTooltip.SetText = function(_, t) title = t end
-ns.Merge.OnEnter(p); assert(title == "C. Ohlson", tostring(title))
+ns.Merge.OnEnter(p); assert(title == "Cnas Ohlson", "tooltip keeps the full name: " .. tostring(title))
+O.Set("nameFormat", "initials"); ns.Pins.Restyle(); S.redraw()
+assert(p.name.text == "CO"); ns.Merge.OnEnter(p); assert(title == "Cnas Ohlson", tostring(title))
+O.Set("nameFormat", "short"); ns.Pins.Restyle(); S.redraw()
 
 -- Level and class from the guild roster; merged tooltips show each level
 S.roster[1][3], S.roster[1][4] = 42, "Warrior"
@@ -41,7 +44,7 @@ lines = {}; ns.Merge.OnEnter(ns.PinPool.At(1))
 assert(title == "2 guildmates" and #lines == 2, tostring(title))
 local seen = {}
 for _, l in ipairs(lines) do seen[l[1]:match("^[^%(]+%(%d+%)")] = true end
-assert(seen["A. Mary"] == nil and seen["Ann (60)"] and seen["C. Ohlson (42)"], "levels in merged tooltip")
+assert(seen["A. Mary"] == nil and seen["Ann (60)"] and seen["Cnas Ohlson (42)"], "levels and full names in merged tooltip")
 S.roster[2] = nil
 
 -- A bad saved value falls back to the default

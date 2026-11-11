@@ -81,6 +81,10 @@ local commands = {
   probe = function() ns.Comms.Probe() end,
   debug = function() ns.Debug.Dump() end,
   layers = function() ns.Debug.Layers() end,
+  dev = function()
+    flip("devMode")
+    ns.Print("dev mode (version not announced): " .. (ns.Options.Get("devMode") and "ON" or "off"))
+  end,
   testpin = function()
     ns.Print("test pin " .. (ns.Pins.ToggleTest() and "ON: open the map, look at its centre" or "off"))
   end,
@@ -92,7 +96,7 @@ SlashCmdList["WHEREABOUTS"] = function(msg)
   if run then
     run()
   else
-    ns.Print("/whereabouts (settings) | on | off | status | version | names | zones | map | minimap | reset | probe | debug | layers | testpin")
+    ns.Print("/whereabouts (settings) | on | off | status | version | names | zones | map | minimap | reset | probe | debug | layers | testpin | dev")
   end
 end
 

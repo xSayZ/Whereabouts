@@ -2,7 +2,7 @@ local ADDON, ns = ...
 local Names = {}
 ns.Names = Names
 
--- How guildmates' names are shown on pins and in tooltips. Forever names can have several words.
+-- How guildmates' names are shown on pin labels (tooltips keep the full name). Forever names can have several words.
 local ORDER = { "full", "short", "initials" }
 local LABEL = { full = "Firstname Lastname", short = "F. Lastname", initials = "FL" }
 local cache, mode = {}, nil

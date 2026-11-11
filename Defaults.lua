@@ -20,6 +20,7 @@ ns.Defaults = {
   mapButton = false,     -- show the On/Off button on the world map
   welcomed = false,      -- the one-time "sharing is on" chat notice has been shown
   onByDefault = false,   -- internal: install has been moved to on-by-default (0.5.0)
+  devMode = false,       -- developer: never announce our version (an unpublished build must not prompt updates)
 }
 
 -- Allowed range for numeric options: { min, max, step }.
