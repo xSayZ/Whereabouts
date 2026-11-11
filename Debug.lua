@@ -41,8 +41,8 @@ function Debug.Dump()
   P(format("VERSION %s | newest seen from guildmates: %s | theme %s size %s alpha %s", ns.Version.current,
     tostring(ns.Version.newest), tostring(ns.Options.Get("theme")), tostring(ns.Options.Get("size")),
     tostring(ns.Options.Get("alpha"))))
-  P(format("enabled %s | running %s | guild %s | instance %s",
-    tostring(ns.IsEnabled()), tostring(ns.Comms.IsRunning()),
+  P(format("enabled %s | dev %s | running %s | guild %s | instance %s",
+    tostring(ns.IsEnabled()), tostring(ns.Options.Get("devMode")), tostring(ns.Comms.IsRunning()),
     tostring(IsInGuild() and true or false), tostring(IsInInstance() and true or false)))
   P(format("SEND ok %d | failed %d | last failure result: %s", st.sent, st.fail, tostring(st.lastRes)))
   P(format("RECV from others %d | own echoes %d | undecodable %d | last sender: %s",

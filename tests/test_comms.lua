@@ -46,6 +46,11 @@ assert(last() == "1|V|0.3.0" and C.stats.fail >= 1)
 local k = #S.sent; S.now = 1505; C.Tick(); assert(#S.sent == k, "backoff applies to announcements too")
 S.sendResult = 0; S.now = 1516; C.Tick(); assert(last() == "1|V|0.3.0" and #S.sent == k + 1, "announcement retried")
 
+-- Dev mode: positions keep flowing, the version is never announced
+ns.Options.Set("devMode", true); S.now = 1600; S.pos.x = 0.6; C.Tick(); assert(last():find("^1|1429"), "position, not version")
+S.now = 2300; S.pos.x = 0.2; C.Tick(); assert(last():find("^1|1429"), "still no version after 10 minutes")
+ns.Options.Set("devMode", false)
+
 -- Stop sends one OFF and goes silent; everything went out on the guild channel
 C.Stop(true)
 assert(last() == "1|OFF" and not C.IsRunning())

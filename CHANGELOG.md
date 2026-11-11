@@ -5,6 +5,19 @@ Versions: [Semantic Versioning](https://semver.org/). Below 1.0.0, a minor relea
 
 Versions 0.1.0 and 0.2.0 were internal builds made while the addon was being written. They were never published.
 
+## [0.5.1] - 2026-11-11
+
+### Fixed
+- Pin tooltips show the full name. With names set to initials (or F. Lastname), the mouseover showed the
+  short form too; now only the label beside the pin is shortened.
+
+### Added
+- `/whereabouts dev`, for addon developers: stops announcing your version, so a build that is not published
+  yet does not tell guildmates to update. Saved between sessions; type it again to turn it off.
+
+### Protocol
+- Unchanged (version 1).
+
 ## [0.5.0] - 2026-11-09
 
 ### Changed

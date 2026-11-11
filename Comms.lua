@@ -58,6 +58,7 @@ function Comms.Tick()
   if not running or not ns.IsEnabled() then return end
   if IsInInstance() or not IsInGuild() then return end
   local now = GetTime()
+  if now >= nextVer and ns.Options.Get("devMode") then nextVer = now + VERSION_EVERY end -- skip, keep the slot for positions
   if now >= nextVer then
     if not (pending and pVer) then pending, pVer = ns.Wire.Ver(ns.Version.current), true end
   else

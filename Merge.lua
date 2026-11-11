@@ -115,7 +115,7 @@ function Merge.OnEnter(self)
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   local m = self.members
   if not m or #m < 2 then
-    GameTooltip:SetText(self.label and ns.Names.Format(self.label) or "?")
+    GameTooltip:SetText(self.label or "?") -- full name: the pin label may be shortened
     local lvl = self.label and ns.Classes.Level(self.label)
     if lvl then
       local r, g, b = classColor(self.label)
@@ -129,7 +129,7 @@ function Merge.OnEnter(self)
       local short = Ambiguate(m[i], "short")
       local lvl = ns.Classes.Level(short)
       local r, g, b = classColor(short)
-      GameTooltip:AddLine(format(lvl and "%s (%d)   %s" or "%s%s   %s", ns.Names.Format(short), lvl or "",
+      GameTooltip:AddLine(format(lvl and "%s (%d)   %s" or "%s%s   %s", short, lvl or "",
         where(self.mpeers[i])), r, g, b)
     end
   end
