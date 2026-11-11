@@ -37,9 +37,7 @@ what it receives as a pin with a name. There is no server and no website behind 
 
 ## Commands
 - `/whereabouts on | off | status | version | names | zones | map | minimap | reset`
-- `/whereabouts debug | probe | layers | testpin` for troubleshooting.
-- `/whereabouts dev` for addon developers: stops announcing your version, so a build that is not published yet
-  does not tell guildmates to update. Saved; type it again to turn it off.
+- `/whereabouts debug | probe | layers | testpin` for troubleshooting; `dev` (developers) stops announcing your version.
 
 ## Privacy
 - On by default; `/whereabouts off` stops it. Guild only.
