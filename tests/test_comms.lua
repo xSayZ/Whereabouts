@@ -49,7 +49,8 @@ S.sendResult = 0; S.now = 1516; C.Tick(); assert(last() == "1|V|0.3.0" and #S.se
 -- Dev mode: positions keep flowing, the version is never announced, not even one queued under backoff
 S.now = 2105; S.pos.x = 0.25; C.Tick(); assert(last():find("^1|1429"), "position before the announcement is due")
 S.now = 2116; S.sendResult = 3; C.Tick(); assert(last() == "1|V|0.3.0", "announcement fails, backoff to 2131")
-S.sendResult = 0; ns.Options.Set("devMode", true); local q = #S.sent
+ns.Options.Init() -- this suite never loaded settings; without a db Set is a no-op
+S.sendResult = 0; assert(ns.Options.Set("devMode", true)); local q = #S.sent
 S.now = 2131; C.Tick(); assert(#S.sent == q, "queued announcement dropped; standing still, no heartbeat yet")
 S.now = 2300; S.pos.x = 0.2; C.Tick(); assert(last():find("^1|1429"), "position, not version")
 S.now = 2800; S.pos.x = 0.4; C.Tick(); assert(last():find("^1|1429"), "still no version after 10 minutes")
